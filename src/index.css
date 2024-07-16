@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: neueLight;
+    src: url("./assets/font/HelveticaNeueLight.otf") format("opentype");
+  }
+  @font-face {
+    font-family: neueBold;
+    src: url("./assets/font/HelveticaNeueBold.otf") format("opentype");
+  }
+  @font-face {
+    font-family: neueMedium;
+    src: url("./assets/font/HelveticaNeueMedium.otf") format("opentype");
+  }
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
