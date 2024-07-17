@@ -1,7 +1,12 @@
 import React from "react";
+import Aboutpanel from "../components/Aboutpanel";
 
 function About() {
-  return <div>About</div>;
+  return (
+    <>
+      <Aboutpanel />
+    </>
+  );
 }
 
 export default About;
