@@ -3,10 +3,17 @@ import React from "react";
 import logo from "../assets/img/logo.svg";
 import { Button } from "@nextui-org/button";
 import { Avatar } from "@nextui-org/react";
+import { Link, useLocation } from "react-router-dom";
 
 function Navbar() {
   const buttonStyle =
     "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 md:w-auto";
+
+  const buttonActiveStyle =
+    "py-2.5 px-5 bg-transparent text-md text-white bg-secondary bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 md:w-auto";
+
+  const location = useLocation();
+
   return (
     <header className="flex flex-wrap w-full py-4 text-sm bg-zinc-800 md:justify-start md:flex-nowrap">
       <nav
@@ -14,15 +21,14 @@ function Navbar() {
         aria-label="Global"
       >
         <div className="flex items-center justify-between">
-          <a
-            className="inline-flex items-center text-xl font-semibold gap-x-2"
-            href="#"
-          >
-            <img src={logo} alt="Logo" className="w-12 h-auto" />
-            <div className="text-4xl text-primary font-displaylight">
-              medifylab
+          <Link to="/">
+            <div className="inline-flex items-center text-xl font-semibold gap-x-2">
+              <img src={logo} alt="Logo" className="w-12 h-auto" />
+              <div className="text-4xl text-primary font-displaylight">
+                medifylab
+              </div>
             </div>
-          </a>
+          </Link>
 
           <div className="md:hidden ">
             <button
@@ -70,29 +76,91 @@ function Navbar() {
           id="navbar-image-and-text-1"
           className="absolute left-0 z-50 hidden w-full pb-5 overflow-hidden transition-all duration-300 md:p-0 bg-zinc-800 md:bg-transparent md:relative hs-collapse basis-full grow md:block"
         >
-          <div className="flex flex-col items-center justify-center gap-5 mt-5 md:flex-row md:items-end md:justify-end md:mt-0 md:ps-5">
-            <Button className={buttonStyle}>Shop</Button>
-
-            <Button className={buttonStyle}>About</Button>
-            <Button className={buttonStyle}>Contacts</Button>
-            <Button className={buttonStyle}>Login</Button>
-            <Button className={buttonStyle}>Sign Up</Button>
-            <Button color="primary" variant="flat" className={buttonStyle}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="white"
-                className=" size-6"
+          <div
+            id="preline__collapse"
+            className="flex flex-col items-center justify-center gap-5 mt-5 md:flex-row md:items-end md:justify-end md:mt-0 md:ps-5"
+          >
+            <Link to="/shop">
+              <Button
+                className={
+                  location.pathname === "/shop"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-                />
-              </svg>
-            </Button>
+                Shop
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button
+                className={
+                  location.pathname === "/about"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
+              >
+                About
+              </Button>
+            </Link>
+            <Link to="/contacts">
+              <Button
+                className={
+                  location.pathname === "/contacts"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
+              >
+                Contacts
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button
+                className={
+                  location.pathname === "/login"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
+              >
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button
+                className={
+                  location.pathname === "/register"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
+              >
+                Sign Up
+              </Button>
+            </Link>
+            <Link to="/cart">
+              <Button
+                color="primary"
+                variant="flat"
+                className={
+                  location.pathname === "/cart"
+                    ? buttonActiveStyle
+                    : buttonStyle
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="white"
+                  className=" size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+              </Button>
+            </Link>
 
             <Avatar
               className="duration-200 cursor-pointer bg-primary hover:bg-secondary"
