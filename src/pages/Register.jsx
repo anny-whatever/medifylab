@@ -1,7 +1,12 @@
 import React from "react";
+import Registerpanel from "../components/Registerpanel";
 
 function Register() {
-  return <div>Register</div>;
+  return (
+    <>
+      <Registerpanel />
+    </>
+  );
 }
 
 export default Register;
