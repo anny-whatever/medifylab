@@ -8,7 +8,7 @@ function Aboutpanel() {
         <div className="md:grid md:grid-cols-2 md:items-center md:gap-12 xl:gap-32">
           <div>
             <img
-              className="h-[60vh] rounded-xl"
+              className="h-ful rounded-xl"
               src="https://images.unsplash.com/photo-1522426197515-ad17e39de88d?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
