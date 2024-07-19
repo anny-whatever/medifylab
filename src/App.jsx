@@ -4,6 +4,7 @@ import { db } from "./utils/config";
 import { collection, addDoc } from "firebase/firestore";
 import { Route, Routes, Link, Navigate } from "react-router-dom";
 import { HSStaticMethods } from "preline";
+import Toastalert from "./components/Toastalert.jsx";
 
 HSStaticMethods.autoInit();
 
@@ -51,7 +52,9 @@ function App() {
   return (
     <>
       {/* <NavbarComponent /> */}
+      <Toastalert />
       <Navbar />
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/about" element={<About />} />
@@ -61,7 +64,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/product/:id" element={<Product />} />
+        <Route path="/product" element={<Product />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
