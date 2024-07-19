@@ -5,6 +5,8 @@ import { Button } from "@nextui-org/button";
 import { Avatar } from "@nextui-org/react";
 import { Link, useLocation } from "react-router-dom";
 
+// import whatsapp from "../assets/img/whatsapp.svg";
+
 function Navbar() {
   const buttonStyle =
     "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 md:w-auto";
@@ -72,6 +74,7 @@ function Navbar() {
             </button>
           </div>
         </div>
+
         <div
           id="navbar-image-and-text-1"
           className="absolute left-0 z-50 hidden w-full pb-5 overflow-hidden transition-all duration-300 md:p-0 bg-zinc-800 md:bg-transparent md:relative hs-collapse basis-full grow md:block"

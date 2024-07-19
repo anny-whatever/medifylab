@@ -1,7 +1,12 @@
 import React from "react";
+import Shoppanel from "../components/Shoppanel";
 
 function Shop() {
-  return <div>Shop</div>;
+  return (
+    <>
+      <Shoppanel />
+    </>
+  );
 }
 
 export default Shop;
