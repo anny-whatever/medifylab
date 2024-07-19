@@ -1,6 +1,8 @@
 import React from "react";
 import logo from "../assets/img/logo.svg";
 
+import { Button } from "@nextui-org/react";
+
 function Footer() {
   return (
     <>
@@ -92,16 +94,17 @@ function Footer() {
                       type="text"
                       id="hero-input"
                       name="hero-input"
-                      className="block w-full px-4 py-3 text-sm border-transparent rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                      className="block w-full px-4 py-3 text-sm border-transparent rounded-lg outline-none focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Enter your email"
                     />
                   </div>
-                  <a
-                    className="inline-flex items-center justify-center w-full p-3 text-sm font-semibold text-white bg-blue-600 border border-transparent rounded-lg sm:w-auto whitespace-nowrap gap-x-2 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                    href="#"
+                  <Button
+                    color="secondary"
+                    className="w-full rounded-lg sm:w-1/4"
                   >
-                    Subscribe
-                  </a>
+                    {" "}
+                    Subscribe{" "}
+                  </Button>
                 </div>
               </form>
             </div>
@@ -109,7 +112,13 @@ function Footer() {
           </div>
           {/* End Grid */}
           <div className="grid mt-5 sm:mt-12 gap-y-2 sm:gap-y-0 sm:flex sm:justify-between sm:items-center">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between items-left">
+              <a href="tel:+16092371558" className="text-left text-gray-400">
+                Tel 1: +1 (609) 237-1558
+              </a>
+              <a href="tel:+12549786592" className="text-left text-gray-400">
+                Tel 2: +1 (254) 978-6592
+              </a>
               <p className="text-sm text-gray-400">
                 © {new Date().getFullYear()} MedifyLab. All rights reserved.
               </p>
