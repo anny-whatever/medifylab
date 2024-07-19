@@ -9,17 +9,17 @@ import { Link, useLocation } from "react-router-dom";
 
 function Navbar() {
   const buttonStyle =
-    "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 md:w-auto";
+    "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 lg:w-auto";
 
   const buttonActiveStyle =
-    "py-2.5 px-5 bg-transparent text-md text-white bg-secondary bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 md:w-auto";
+    "py-2.5 px-5 bg-transparent text-md text-white bg-secondary bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 lg:w-auto";
 
   const location = useLocation();
 
   return (
-    <header className="flex flex-wrap w-full py-4 text-sm bg-zinc-800 md:justify-start md:flex-nowrap">
+    <header className="flex flex-wrap w-full py-4 text-sm bg-zinc-800 lg:justify-start lg:flex-nowrap">
       <nav
-        className="max-w-[85rem] w-full mx-auto px-4 md:flex md:items-center md:justify-between"
+        className="max-w-[85rem] w-full mx-auto px-4 lg:flex lg:items-center lg:justify-between"
         aria-label="Global"
       >
         <div className="flex items-center justify-between">
@@ -32,7 +32,7 @@ function Navbar() {
             </div>
           </Link>
 
-          <div className="md:hidden ">
+          <div className="lg:hidden ">
             <button
               type="button"
               className="inline-flex items-center justify-center p-2 text-white duration-100 ease-in-out rounded-lg shadow-sm bg-secondary bg-opacity-30 hs-collapse-toggle gap-x-2 hover:bg-opacity-40 disabled:opacity-50 disabled:pointer-events-none"
@@ -77,11 +77,11 @@ function Navbar() {
 
         <div
           id="navbar-image-and-text-1"
-          className="absolute left-0 z-50 hidden w-full pb-5 overflow-hidden transition-all duration-300 md:p-0 bg-zinc-800 md:bg-transparent md:relative hs-collapse basis-full grow md:block"
+          className="absolute left-0 z-50 hidden w-full pb-5 overflow-hidden transition-all duration-300 lg:p-0 bg-zinc-800 lg:bg-transparent lg:relative hs-collapse basis-full grow lg:block"
         >
           <div
             id="preline__collapse"
-            className="flex flex-col items-center justify-center gap-5 mt-5 md:flex-row md:items-end md:justify-end md:mt-0 md:ps-5"
+            className="flex flex-col items-center self-center justify-center gap-5 mx-auto mt-5 text-center lg:flex-row lg:items-end lg:justify-end lg:mt-0 lg:ps-5"
           >
             <Link to="/shop">
               <Button
