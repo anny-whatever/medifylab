@@ -7,6 +7,8 @@ import { Button } from "@nextui-org/react";
 
 import CarouselComponent from "./CarouselComponent.jsx";
 
+import whatsapp from "../assets/img/whatsapp.svg";
+
 // import visa from "../assets/paylogo/visa.svg";
 // import visa from "../assets/paylogo/visa-svgrepo-com.svg";
 import zelle from "../assets/paylogo/zelle.svg";
@@ -66,6 +68,12 @@ function Hero() {
                   Request call
                 </Button>
               </div>
+              <span className="flex items-center mt-3 ">
+                Or chat with us on
+                <a href="https://wa.me/16092371558">
+                  <img src={whatsapp} className="relative ml-2.5 w-28" alt="" />
+                </a>
+              </span>
               {/* Brands */}
               <div className="mt-6 lg:mt-12">
                 <span className="text-xs font-medium text-gray-800 uppercase">
