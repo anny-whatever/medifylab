@@ -1,6 +1,8 @@
 import React from "react";
 import logo from "../assets/img/logo.svg";
 
+import { Link } from "react-router-dom";
+
 import { Button } from "@nextui-org/react";
 
 function Footer() {
@@ -26,28 +28,32 @@ function Footer() {
               <h4 className="font-semibold text-gray-100">Product</h4>
               <div className="grid mt-3 space-y-3">
                 <p>
-                  <a
-                    className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
-                  >
-                    Shop All
-                  </a>
+                  <Link to="/shop">
+                    <span className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200">
+                      Shop
+                    </span>
+                  </Link>
                 </p>
                 <p>
-                  <a
-                    className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
-                  >
-                    Best Sellers
-                  </a>
+                  <Link to="/shop?sort=bestseller">
+                    <span className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200">
+                      Best Sellers
+                    </span>
+                  </Link>
                 </p>
                 <p>
-                  <a
-                    className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
-                  >
-                    Offers
-                  </a>
+                  <Link to="/shop?sort=offers">
+                    <span className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200">
+                      Newest
+                    </span>
+                  </Link>
+                </p>
+                <p>
+                  <Link to="/cart">
+                    <span className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200">
+                      Cart
+                    </span>
+                  </Link>
                 </p>
               </div>
             </div>
@@ -70,14 +76,6 @@ function Footer() {
                   >
                     About us
                   </a>
-                </p>
-                <p>
-                  <a
-                    className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
-                  >
-                    Cart
-                  </a>{" "}
                 </p>
               </div>
             </div>
