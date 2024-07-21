@@ -1,7 +1,12 @@
 import React from "react";
+import Cartpanel from "../components/Cartpanel";
 
 function Cart() {
-  return <div>Cart</div>;
+  return (
+    <>
+      <Cartpanel />
+    </>
+  );
 }
 
 export default Cart;
