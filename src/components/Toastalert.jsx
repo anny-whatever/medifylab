@@ -27,7 +27,7 @@ const Toastalert = () => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
+  });
 
   return <Toaster richColors />;
 };
