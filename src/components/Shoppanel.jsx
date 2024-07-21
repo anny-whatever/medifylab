@@ -3,12 +3,12 @@ import { RadioGroup, Radio } from "@nextui-org/react";
 import { Pagination } from "@nextui-org/react";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 
-import ProductCard from "./ProductCard";
+import Shopcard from "./Shopcard";
 function Shoppanel() {
   return (
     <div className="flex flex-col justify-center w-full md:flex-col ">
       <div className="flex flex-col justify-center w-full gap-x-7 md:flex-row">
-        <div className="sticky hidden w-11/12 p-5 mx-auto my-5 md:block md:w-2/6 lg:w-1/5 md:mx-0 border-1 h-fit top-5 rounded-xl">
+        <div className="sticky hidden w-11/12 p-5 mx-auto my-5 shadow-md md:block md:w-2/6 lg:w-1/5 md:mx-0 border-1 h-fit top-5 rounded-xl">
           <h1 className="mb-5 text-2xl font-bold text-primary sm:text-2xl border-b-1">
             Categories
           </h1>
@@ -27,7 +27,7 @@ function Shoppanel() {
             </RadioGroup>
           </div>
         </div>
-        <div className="w-11/12 p-2 mx-auto my-5 md:hidden md:mx-0 catSide border-1 h-fit top-5 rounded-xl">
+        <div className="w-11/12 p-2 mx-auto my-5 shadow-md md:hidden md:mx-0 catSide border-1 h-fit top-5 rounded-xl">
           <Accordion>
             <AccordionItem
               key="1"
@@ -59,14 +59,14 @@ function Shoppanel() {
             All Products
           </h1>
 
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
+          <Shopcard />
         </div>
       </div>
       <Pagination
