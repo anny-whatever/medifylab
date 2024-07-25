@@ -1,25 +1,31 @@
 import React from "react";
 import { useState } from "react";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-
 import { Button } from "@nextui-org/react";
-
+import PhoneInput from "react-phone-input-2";
 import CarouselComponent from "./CarouselComponent.jsx";
-
 import whatsapp from "../assets/img/whatsapp.svg";
 
-// import visa from "../assets/paylogo/visa.svg";
-// import visa from "../assets/paylogo/visa-svgrepo-com.svg";
 import zelle from "../assets/paylogo/zelle.svg";
 import paypal from "../assets/paylogo/paypal.svg";
 import cashapp from "../assets/paylogo/cashapp.svg";
 import venmo from "../assets/paylogo/venmo.svg";
+import "react-phone-input-2/lib/style.css";
+import { Toaster, toast } from "sonner";
 
+import { db } from "../utils/config.js";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 function Hero() {
   const [value, setValue] = useState();
+
+  const savePhoneNumber = async () => {
+    const docRef = doc(db, "visitorInfo", "tel");
+    await updateDoc(docRef, {
+      pendingNumbers: arrayUnion(value),
+    });
+  };
   return (
     <>
+      <Toaster richColors />
       <div className="w-full py-5 bg-opacity-20 bg-primary">
         {/* Hero */}
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,6 +70,7 @@ function Hero() {
                   color="secondary"
                   className="w-full py-6 rounded-lg sm:w-fit"
                   href="#"
+                  onClick={() => savePhoneNumber()}
                 >
                   Request call
                 </Button>
