@@ -1,21 +1,35 @@
 import React from "react";
-
+import { useState, useContext, useEffect } from "react";
 import logo from "../assets/img/logo.svg";
-import { Button } from "@nextui-org/button";
-import { Avatar } from "@nextui-org/react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  Avatar,
+} from "@nextui-org/react";
 import { Link, useLocation } from "react-router-dom";
+
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../utils/config";
+import { AuthContext } from "../utils/authContext.js";
 
 // import whatsapp from "../assets/img/whatsapp.svg";
 
 function Navbar() {
+  let { userInfo, isLoggedIn } = useContext(AuthContext);
+  const location = useLocation();
+
   const buttonStyle =
     "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 lg:w-auto";
 
   const buttonActiveStyle =
     "py-2.5 px-5 bg-transparent text-md text-white bg-secondary bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 lg:w-auto";
 
-  const location = useLocation();
-
+  const handleLogout = () => {
+    signOut(auth);
+  };
   return (
     <header className="flex flex-wrap w-full py-4 text-sm bg-zinc-800 lg:justify-start lg:flex-nowrap">
       <nav
@@ -77,7 +91,7 @@ function Navbar() {
 
         <div
           id="navbar-image-and-text-1"
-          className="absolute left-0 z-50 hidden w-full pb-5 overflow-hidden transition-all duration-300 lg:p-0 bg-zinc-800 lg:bg-transparent lg:relative hs-collapse basis-full grow lg:block"
+          className="absolute left-0 z-30 hidden w-full pb-5 overflow-hidden transition-all duration-300 lg:p-0 bg-zinc-800 lg:bg-transparent lg:relative hs-collapse basis-full grow lg:block"
         >
           <div
             id="preline__collapse"
@@ -116,28 +130,33 @@ function Navbar() {
                 Contacts
               </Button>
             </Link>
-            <Link to="/login">
-              <Button
-                className={
-                  location.pathname === "/login"
-                    ? buttonActiveStyle
-                    : buttonStyle
-                }
-              >
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button
-                className={
-                  location.pathname === "/register"
-                    ? buttonActiveStyle
-                    : buttonStyle
-                }
-              >
-                Sign Up
-              </Button>
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login">
+                  <Button
+                    className={
+                      location.pathname === "/login"
+                        ? buttonActiveStyle
+                        : buttonStyle
+                    }
+                  >
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button
+                    className={
+                      location.pathname === "/register"
+                        ? buttonActiveStyle
+                        : buttonStyle
+                    }
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            ) : null}
+
             <Link to="/cart">
               <Button
                 color="primary"
@@ -165,10 +184,27 @@ function Navbar() {
               </Button>
             </Link>
 
-            <Avatar
-              className="duration-200 cursor-pointer bg-primary hover:bg-secondary"
-              size="md"
-            />
+            {isLoggedIn ? (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Avatar
+                    className="duration-200 cursor-pointer bg-primary hover:bg-secondary"
+                    size="md"
+                  />
+                </DropdownTrigger>
+                <DropdownMenu>
+                  <DropdownItem key="profile" variant="flat">
+                    {userInfo?.email}
+                  </DropdownItem>
+                  <DropdownItem key="order">Orders</DropdownItem>
+
+                  <DropdownItem key="logout" onClick={handleLogout}>
+                    {" "}
+                    Logout
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            ) : null}
           </div>
         </div>
       </nav>
