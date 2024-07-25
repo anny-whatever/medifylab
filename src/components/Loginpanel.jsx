@@ -1,7 +1,11 @@
 import React from "react";
+import { useState } from "react";
 import { Button } from "@nextui-org/react";
 
-function Loginpanel() {
+function Loginpanel({ handleEmailSignUp, handleGoogleSignIn }) {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
   return (
     <>
       {/* Contact Us */}
@@ -38,6 +42,7 @@ function Loginpanel() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+                    onClick={() => handleGoogleSignIn()}
                   >
                     <svg
                       className="w-4 h-auto"
@@ -84,6 +89,7 @@ function Loginpanel() {
                             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             required=""
                             aria-describedby="email-error"
+                            onChange={(e) => setEmail(e.target.value)}
                           />
                           <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                             <svg
@@ -131,6 +137,7 @@ function Loginpanel() {
                             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             required=""
                             aria-describedby="password-error"
+                            onChange={(e) => setPassword(e.target.value)}
                           />
                           <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                             <svg
@@ -170,7 +177,18 @@ function Loginpanel() {
                         </div>
                       </div>
                       {/* End Checkbox */}
-                      <Button color="secondary">Sign in</Button>
+                      {email && password ? (
+                        <Button
+                          color="secondary"
+                          onClick={() => handleEmailSignUp(email, password)}
+                        >
+                          Sign in
+                        </Button>
+                      ) : (
+                        <Button color="secondary" isDisabled>
+                          Sign in
+                        </Button>
+                      )}
                     </div>
                   </form>
                   {/* End Form */}
