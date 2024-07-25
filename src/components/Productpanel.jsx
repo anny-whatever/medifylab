@@ -1,33 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactImageGallery from "react-image-gallery";
-// import Rater from "react-rater";
-// import "react-rater/lib/react-rater.css";
+
+import { useContext } from "react";
+import { DataContext } from "../utils/dataContext.js";
 
 import { Button } from "@nextui-org/react";
 import { RadioGroup, Radio } from "@nextui-org/radio";
 
+import { useParams } from "react-router-dom";
+
 const Productpanel = () => {
+  const { products } = useContext(DataContext);
   const [deliveryRoute, setDeliveryRoute] = useState();
-  const [packSize, setPackSize] = useState();
+  const [pack, setPack] = useState();
+  const [productDetails, setProductDetails] = useState([]);
+
+  const [imageOpen, setImageOpen] = useState(false);
+
+  const { productId } = useParams();
+  useEffect(() => {
+    const productDetails = products?.productsArray?.filter((product) => {
+      return product.uuid === productId;
+    });
+    console.log(productId);
+    console.log(productDetails);
+    setProductDetails(productDetails?.[0]);
+  }, []);
+
+  const handleOpen = () => {
+    setImageOpen(!imageOpen);
+  };
+
+  const openImageStyle =
+    " absolute bg-black left-0 top-0 mx-auto right-0 z-40 w-screen h-full  duration-300 ease-in-out";
+  const closedImageStyle = "container px-4 mx-auto duration-300 ease-in-out";
 
   const radioStyle =
     "ml-1 mb-2 rounded-md border-1 transition-all duration-300 ease-in-out";
   const activateRadioStyle =
     "ml-1 mb-2 rounded-md shadow-md border-1 duration-300 ease-in-out";
 
-  const productDetailItem = {
+  // const openImageCanvasStyle =
+
+  const productImages = {
     images: [
       {
-        original:
-          "https://images.pexels.com/photos/2697787/pexels-photo-2697787.jpeg?auto=compress&cs=tinysrgb&w=600",
-        thumbnail:
-          "https://images.pexels.com/photos/2697787/pexels-photo-2697787.jpeg?auto=compress&cs=tinysrgb&w=600",
+        original: productDetails?.mainImage,
+        thumbnail: productDetails?.mainImage,
       },
       {
-        original:
-          "https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        thumbnail:
-          "https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        original: productDetails?.secondaryImage,
+        thumbnail: productDetails?.secondaryImage,
       },
     ],
 
@@ -38,123 +61,176 @@ const Productpanel = () => {
   return (
     <section className="container flex-grow mx-auto max-w-[1200px] border-b py-5 text-gray-800 lg:grid lg:grid-cols-2 lg:py-10">
       {/* image gallery */}
-      <div className="container px-4 mx-auto">
+      {imageOpen === true ? (
+        <Button
+          color="secondary"
+          size="lg"
+          className="absolute z-50 text-white left-5 top-5 "
+          onClick={() => {
+            handleOpen();
+          }}
+        >
+          Back
+        </Button>
+      ) : null}
+
+      <div className={imageOpen ? openImageStyle : closedImageStyle}>
         <ReactImageGallery
           showBullets={false}
           showPlayButton={false}
           infinite={true}
           lazyLoad={true}
-          showFullscreenButton={true}
-          items={productDetailItem.images}
+          showFullscreenButton={false}
+          items={productImages?.images}
+          onClick={(e) => {
+            handleOpen();
+          }}
         />
 
         {/* /image gallery  */}
       </div>
+
       {/* description  */}
 
       <div className="px-5 mx-auto lg:px-5">
         <h2 className="pt-3 text-2xl font-bold text-gray-800 lg:pt-0">
-          Modafinil-100mg
+          {productDetails?.name}
         </h2>
-        {/* <div className="mt-1">
-          <div className="flex items-center">
-            <Rater
-              style={{ fontSize: "20px" }}
-              total={5}
-              interactive={false}
-              rating={getStateNumber()}
-            />
 
-            <p className="ml-3 text-sm text-gray-400">
-              ({productDetailItem.reviews})
-            </p>
-          </div>
-        </div> */}
         <p className="mt-5 font-bold">
-          <p className="text-sm text-primary ">Details</p>
-          Generic name: <span className="font-normal">Modafinil</span>
+          <span className="text-sm text-primary ">Details</span>
+          <br />
+          Generic name:{" "}
+          <span className="font-normal">{productDetails?.generic}</span>
         </p>
         <p className="font-bold">
-          Brand name: <span className="font-normal">Provigil</span>
+          Brand name:{" "}
+          <span className="font-normal">{productDetails?.brand}</span>
         </p>
         <p className="font-bold">
           Dosage form:{" "}
-          <span className="font-normal">oral tablet (100 mg; 200 mg)</span>
+          <span className="font-normal">{productDetails?.dosage}</span>
         </p>
         <p className="font-bold">
-          Drug class: <span className="font-normal">CNS stimulants</span>
+          Drug class:{" "}
+          <span className="font-normal">{productDetails?.class}</span>
         </p>
         <div className="mt-3 mr-1 font-displaybold">
           <span className="mr-2 text-2xl text-red-600 font-displaylight">
-            -50%
+            {(
+              ((parseInt(productDetails?.discount) -
+                parseInt(productDetails?.price)) /
+                parseInt(productDetails?.price)) *
+              100
+            ).toFixed(0)}
+            %
           </span>
-          <span className="text-4xl font-displaybold text-primary">$5</span>
+          <span className="text-4xl font-displaybold text-primary">
+            ${productDetails?.discount}
+          </span>
           <span className="text-lg text-primary">/pill</span>
           <div className="font-displaylight">
-            MRP: <span className="line-through ">$10/pill</span>
+            MRP:{" "}
+            <span className="line-through ">${productDetails?.price}/pill</span>
           </div>
         </div>
 
         <p className="pt-5 mb-5 text-sm leading-5 text-gray-500">
-          Modafinil is a medication that promotes wakefulness. Modafinil is used
-          to treat excessive sleepiness caused by sleep apnea, narcolepsy, or
-          shift work sleep disorder.Modafinil may also be used for purposes not
-          listed in this medication guide.
+          {productDetails?.description}
         </p>
 
         <RadioGroup
           label="Select delivery route"
           // defaultValue={"intous"}
-          onChange={(value) => setDeliveryRoute(value.target.value)}
+          onChange={(value) => {
+            setDeliveryRoute(value.target.value);
+          }}
           color="secondary"
           orientation="horizontal"
         >
-          <Radio
-            value="intous"
-            className={
-              deliveryRoute === "intous" ? activateRadioStyle : radioStyle
-            }
-          >
-            India to US
-          </Radio>
-          <Radio
-            value="ustous"
-            className={
-              deliveryRoute === "ustous" ? activateRadioStyle : radioStyle
-            }
-          >
-            US to US
-          </Radio>
+          {productDetails?.route?.map((routename) => (
+            <Radio
+              key={routename}
+              value={routename}
+              className={
+                deliveryRoute === routename ? activateRadioStyle : radioStyle
+              }
+            >
+              {routename === "intous" ? "India to US" : "US to US"}
+            </Radio>
+          ))}
         </RadioGroup>
         <div className="mt-6">
           <div className="flex w-full gap-1 ">
-            <RadioGroup
-              label="Select Packing Size"
-              // defaultValue={"intous"}
-              onChange={(value) => setPackSize(value.target.value)}
-              color="secondary"
-              orientation="horizontal"
-            >
-              <Radio value="60" className={radioStyle}>
-                60 Pills
-              </Radio>
-              <Radio value="90" className={radioStyle}>
-                90 Pills
-              </Radio>
-              <Radio value="120" className={radioStyle}>
-                120 Pills
-              </Radio>
-              <Radio value="150" className={radioStyle}>
-                150 Pills
-              </Radio>
-              <Radio value="custom" className={radioStyle}>
-                Custom
-              </Radio>
-            </RadioGroup>
+            {deliveryRoute === "intous" ? (
+              <>
+                <RadioGroup
+                  label="Select Packing Size"
+                  // defaultValue={"intous"}
+                  onChange={(value) => setPack(value.target.value)}
+                  color="secondary"
+                  orientation="horizontal"
+                >
+                  {productDetails?.packSizeIN?.map((size) => {
+                    return (
+                      <Radio
+                        key={size}
+                        value={size}
+                        className={
+                          pack === size ? activateRadioStyle : radioStyle
+                        }
+                      >
+                        {size}
+                      </Radio>
+                    );
+                  })}
+                  <Radio
+                    value="custom"
+                    className={
+                      pack === "custom" ? activateRadioStyle : radioStyle
+                    }
+                  >
+                    Custom
+                  </Radio>
+                </RadioGroup>
+              </>
+            ) : (
+              <>
+                <RadioGroup
+                  label="Select Packing Size"
+                  // defaultValue={"intous"}
+                  onChange={(value) => setPack(value.target.value)}
+                  color="secondary"
+                  orientation="horizontal"
+                >
+                  {productDetails?.packSizeUS?.map((size) => {
+                    return (
+                      <Radio
+                        key={size}
+                        value={size}
+                        className={
+                          pack === size ? activateRadioStyle : radioStyle
+                        }
+                      >
+                        {size}
+                      </Radio>
+                    );
+                  })}
+                  <Radio
+                    value="custom"
+                    className={
+                      pack === "custom" ? activateRadioStyle : radioStyle
+                    }
+                  >
+                    Custom
+                  </Radio>
+                </RadioGroup>
+              </>
+            )}
           </div>
         </div>
 
-        {packSize === "custom" ? (
+        {pack === "custom" ? (
           <>
             <div className="mt-6">
               <p className="pb-2 text-gray-500 text-md">
