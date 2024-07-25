@@ -1,14 +1,31 @@
 import React from "react";
 import logo from "../assets/img/logo.svg";
-
+import { useState, use } from "react";
 import { Link } from "react-router-dom";
-
 import { Button } from "@nextui-org/react";
+import { Toaster, toast } from "sonner";
+
+import { db } from "../utils/config.js";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 function Footer() {
+  const [email, setEmail] = useState();
+
+  const savePhoneNumber = async () => {
+    const docRef = doc(db, "visitorInfo", "email");
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (regex.test(email)) {
+      await updateDoc(docRef, {
+        letterEmails: arrayUnion(email),
+      });
+    } else {
+      toast.error("Please enter a valid email");
+    }
+  };
   return (
     <>
       {/* ========== FOOTER ========== */}
+      <Toaster richColors />
       <footer className="w-full mt-auto bg-zinc-800">
         <div className="mt-auto w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 lg:pt-20 mx-auto">
           {/* Grid */}
@@ -89,16 +106,19 @@ function Footer() {
                       Search
                     </label>
                     <input
-                      type="text"
-                      id="hero-input"
+                      type="email"
+                      id="emailInput"
                       name="hero-input"
                       className="block w-full px-4 py-3 text-sm border-transparent rounded-lg outline-none focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Enter your email"
+                      pattern="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   <Button
                     color="secondary"
                     className="w-full rounded-lg sm:w-1/4"
+                    onClick={() => savePhoneNumber()}
                   >
                     {" "}
                     Subscribe{" "}
