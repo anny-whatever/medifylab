@@ -24,7 +24,8 @@
     "react-phone-input-2": "^2.15.1",
     "react-rater": "^6.0.5",
     "react-router-dom": "^6.24.1",
-    "sonner": "^1.5.0"
+    "sonner": "^1.5.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

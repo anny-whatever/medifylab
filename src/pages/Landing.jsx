@@ -1,13 +1,17 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { DataContext } from "../utils/dataContext.js";
+import { AuthContext } from "../utils/authContext.js";
 import Hero from "../components/Hero.jsx";
-
 import Features from "../components/Features.jsx";
 import Offers from "../components/Offers.jsx";
 import Bestseller from "../components/Bestseller.jsx";
 import Stats from "../components/Stats.jsx";
 
-import Footer from "../components/Footer.jsx";
 function Landing() {
+  const { auth } = useContext(AuthContext);
+
   return (
     <>
       <Hero />

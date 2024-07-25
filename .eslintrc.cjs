@@ -21,5 +21,6 @@ module.exports = {
     // disable wrning for unused deps and vars
     "no-unused-vars": "off",
     "no-unused-vars-experimental": "off",
+    "react/prop-types": "off",
   },
 };

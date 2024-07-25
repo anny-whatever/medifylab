@@ -7,7 +7,7 @@ const Toastalert = () => {
 
   const setRandomTimeout = () => {
     const minSeconds = 30;
-    const maxSeconds = 500;
+    const maxSeconds = 180;
     const randomSeconds = Math.floor(
       Math.random() * (maxSeconds - minSeconds + 1) + minSeconds
     );

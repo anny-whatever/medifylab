@@ -1,7 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 
 import preline from "preline/plugin";
+
 import { nextui } from "@nextui-org/react";
+import { clamp } from "framer-motion";
 // const preline = require("preline/plugin.js");
 
 export default {
@@ -31,6 +33,7 @@ export default {
   darkMode: "class",
   plugins: [
     preline,
+
     nextui({
       prefix: "nextui", // prefix for themes variables
       addCommonColors: true, // override common colors (e.g. "blue", "green", "pink").
