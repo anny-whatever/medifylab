@@ -1,7 +1,13 @@
 import React from "react";
+import { useState } from "react";
 import { Button } from "@nextui-org/react";
 
-function Registerpanel() {
+function Registerpanel({ handleEmailSignUp, handleGoogleSignIn }) {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [checkbox, setCheckbox] = useState(false);
+
   return (
     <>
       {/* Contact Us */}
@@ -38,6 +44,7 @@ function Registerpanel() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+                    onClick={() => handleGoogleSignIn()}
                   >
                     <svg
                       className="w-4 h-auto"
@@ -84,6 +91,7 @@ function Registerpanel() {
                             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             required=""
                             aria-describedby="email-error"
+                            onChange={(e) => setEmail(e.target.value)}
                           />
                           <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                             <svg
@@ -123,6 +131,7 @@ function Registerpanel() {
                             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             required=""
                             aria-describedby="password-error"
+                            onChange={(e) => setPassword(e.target.value)}
                           />
                           <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                             <svg
@@ -137,12 +146,14 @@ function Registerpanel() {
                             </svg>
                           </div>
                         </div>
-                        <p
-                          className="hidden mt-2 text-xs text-red-600"
-                          id="password-error"
-                        >
-                          8+ characters required
-                        </p>
+                        {password?.length < 6 && password != "" ? (
+                          <p
+                            className="mt-2 text-xs text-red-600"
+                            id="password-error"
+                          >
+                            6 or morecharacters required
+                          </p>
+                        ) : null}
                       </div>
                       {/* End Form Group */}
                       {/* Form Group */}
@@ -161,6 +172,7 @@ function Registerpanel() {
                             className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             required=""
                             aria-describedby="confirm-password-error"
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                           />
                           <div className="absolute inset-y-0 hidden pointer-events-none end-0 pe-3">
                             <svg
@@ -175,12 +187,18 @@ function Registerpanel() {
                             </svg>
                           </div>
                         </div>
-                        <p
-                          className="hidden mt-2 text-xs text-red-600"
-                          id="confirm-password-error"
-                        >
-                          Password does not match the password
-                        </p>
+                        {password != confirmPassword && confirmPassword ? (
+                          <p className="mt-2 text-xs text-red-600">
+                            Password does not match
+                          </p>
+                        ) : null}
+                        {password == confirmPassword &&
+                        password != "" &&
+                        confirmPassword != "" ? (
+                          <p className="mt-2 text-xs text-green-600">
+                            Password matched!
+                          </p>
+                        ) : null}
                       </div>
                       {/* End Form Group */}
                       {/* Checkbox */}
@@ -191,6 +209,7 @@ function Registerpanel() {
                             name="remember-me"
                             type="checkbox"
                             className=" border-1 shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500"
+                            onChange={(e) => setCheckbox(e.target.checked)}
                           />
                         </div>
                         <div className="ms-3">
@@ -206,7 +225,23 @@ function Registerpanel() {
                         </div>
                       </div>
                       {/* End Checkbox */}
-                      <Button color="secondary">Sign up</Button>
+                      {email &&
+                      password &&
+                      confirmPassword &&
+                      password == confirmPassword &&
+                      password?.length > 5 &&
+                      checkbox ? (
+                        <Button
+                          color="secondary"
+                          onClick={() => handleEmailSignUp(email, password)}
+                        >
+                          Sign Up
+                        </Button>
+                      ) : (
+                        <Button color="secondary" isDisabled>
+                          Sign Up
+                        </Button>
+                      )}
                     </div>
                   </form>
                   {/* End Form */}
