@@ -73,7 +73,7 @@ function Aboutpanel() {
                     </svg>
                   </span>
                   <span className="text-sm text-gray-500 sm:text-base">
-                    Wide Range of Products
+                    <span className="font-bold">Wide Range</span> of Products
                   </span>
                 </li>
                 <li className="flex space-x-3">
@@ -94,7 +94,7 @@ function Aboutpanel() {
                     </svg>
                   </span>
                   <span className="text-sm text-gray-500 sm:text-base">
-                    Wide Range of Products
+                    <span className="font-bold">24*7 </span>Support
                   </span>
                 </li>
               </ul>
