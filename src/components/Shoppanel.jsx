@@ -25,7 +25,7 @@ function Shoppanel() {
     setFilteredProducts(productsArray);
   }, [category, products]);
 
-  const productsPerPage = 3;
+  const productsPerPage = 10;
   const totalPages = Math.ceil(filteredProducts?.length / productsPerPage);
 
   useEffect(() => {
@@ -57,8 +57,8 @@ function Shoppanel() {
               color="secondary"
             >
               <Radio value="all">All</Radio>
-              <Radio value="ed">E.D.</Radio>
-              <Radio value="control">Control</Radio>
+              <Radio value="ed">Erectile Dysfunction</Radio>
+              <Radio value="control">Painkillers and more</Radio>
               <Radio value="performance">Performance / Power</Radio>
               <Radio value="other">Others</Radio>
             </RadioGroup>
@@ -76,13 +76,13 @@ function Shoppanel() {
                 <RadioGroup
                   label="Select product catergory"
                   defaultValue={"all"}
-                  // onChange={(value) => console.log(value.target.value)}
+                  onChange={(value) => setCategory(value.target.value)}
                   color="secondary"
                   className="text-base font-normal text-primary"
                 >
                   <Radio value="all">All</Radio>
-                  <Radio value="ed">E.D.</Radio>
-                  <Radio value="control">Control</Radio>
+                  <Radio value="ed">Erectile Dysfunction</Radio>
+                  <Radio value="control">Painkillers and more</Radio>
                   <Radio value="performance">Performance / Power</Radio>
                   <Radio value="other">Others</Radio>
                 </RadioGroup>
@@ -93,7 +93,11 @@ function Shoppanel() {
 
         <div className="w-11/12 p-5 mx-auto my-5 shadow-lg md:w-3/5 md:mx-0 border-1 rounded-xl">
           <h1 className="mb-5 text-2xl font-bold text-primary sm:text-2xl border-b-1 ">
-            All Products
+            {category === "all" ? "All Products" : null}
+            {category === "ed" ? "Erectile Dysfunction" : null}
+            {category === "control" ? "Painkillers and more" : null}
+            {category === "performance" ? "Performance / Power" : null}
+            {category === "other" ? "Others" : null}
           </h1>
 
           {currentProducts?.map((product) => {

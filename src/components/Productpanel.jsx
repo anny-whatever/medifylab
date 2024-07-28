@@ -1,31 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ReactImageGallery from "react-image-gallery";
-
-import { useContext } from "react";
 import { DataContext } from "../utils/dataContext.js";
+import { AuthContext } from "../utils/authContext.js";
 
-import { Button } from "@nextui-org/react";
+import { Button, user } from "@nextui-org/react";
 import { RadioGroup, Radio } from "@nextui-org/radio";
+import { Select, SelectItem } from "@nextui-org/react";
 
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
+import { Toaster, toast } from "sonner";
+
+import { db } from "../utils/config";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+
+import { v4 as uuidv4 } from "uuid";
 
 const Productpanel = () => {
+  const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
   const { products } = useContext(DataContext);
+  const { productId } = useParams();
   const [deliveryRoute, setDeliveryRoute] = useState();
   const [pack, setPack] = useState();
   const [productDetails, setProductDetails] = useState([]);
-
   const [imageOpen, setImageOpen] = useState(false);
+  const [isCustom, setIsCustom] = useState(false);
+  let cart = [];
 
-  const { productId } = useParams();
   useEffect(() => {
     const productDetails = products?.productsArray?.filter((product) => {
       return product.uuid === productId;
     });
-    console.log(productId);
-    console.log(productDetails);
+
     setProductDetails(productDetails?.[0]);
-  }, []);
+  }, [products, productId]);
 
   const handleOpen = () => {
     setImageOpen(!imageOpen);
@@ -48,213 +55,280 @@ const Productpanel = () => {
         original: productDetails?.mainImage,
         thumbnail: productDetails?.mainImage,
       },
+
       {
         original: productDetails?.secondaryImage,
         thumbnail: productDetails?.secondaryImage,
       },
     ],
-
-    size: ["60 Pills", "112", "M", "L", "XL"],
-    color: ["gray", "violet", "red"],
   };
 
+  const saveProductToCart = () => {
+    if (localStorage.getItem("cart")) {
+      cart = JSON.parse(localStorage.getItem("cart"));
+    }
+    console.log(cart);
+    const product = {
+      cartpid: uuidv4(),
+      uuid: productDetails?.uuid,
+      route: deliveryRoute,
+      pack: pack,
+      qty: 1,
+      price: productDetails?.discount,
+    };
+    if (
+      cart.some(
+        (item) =>
+          item.uuid === product?.uuid &&
+          item.route === product?.route &&
+          item.pack === product?.pack
+      )
+    ) {
+      toast.error("Product already added to cart");
+    } else {
+      cart.push(product);
+      if (!deliveryRoute || !pack) {
+        toast.error("Please select delivery route and pack size");
+      } else {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        toast.success("Product added to cart");
+      }
+    }
+  };
+
+  const saveProductToCartIfLoggedin = async () => {
+    const product = {
+      cartpid: uuidv4(),
+      uuid: productDetails?.uuid,
+      route: deliveryRoute,
+      pack: pack,
+      qty: 1,
+      price: productDetails?.discount,
+    };
+    if (
+      userData?.cart?.some(
+        (item) =>
+          item.uuid === product?.uuid &&
+          item.route === product?.route &&
+          item.pack === product?.pack
+      )
+    ) {
+      toast.error("Product already added to cart");
+    } else {
+      if (!deliveryRoute || !pack) {
+        toast.error("Please select delivery route and pack size");
+      } else {
+        await updateDoc(doc(db, "users", userInfo?.uid), {
+          cart: arrayUnion(product),
+        });
+        toast.success("Product added to cart");
+      }
+    }
+  };
   return (
-    <section className="container flex-grow mx-auto max-w-[1200px] border-b py-5 text-gray-800 lg:grid lg:grid-cols-2 lg:py-10">
-      {/* image gallery */}
-      {imageOpen === true ? (
-        <Button
-          color="secondary"
-          size="lg"
-          className="absolute z-50 text-white left-5 top-5 "
-          onClick={() => {
-            handleOpen();
-          }}
-        >
-          Back
-        </Button>
-      ) : null}
-
-      <div className={imageOpen ? openImageStyle : closedImageStyle}>
-        <ReactImageGallery
-          showBullets={false}
-          showPlayButton={false}
-          infinite={true}
-          lazyLoad={true}
-          showFullscreenButton={false}
-          items={productImages?.images}
-          onClick={(e) => {
-            handleOpen();
-          }}
-        />
-
-        {/* /image gallery  */}
-      </div>
-
-      {/* description  */}
-
-      <div className="px-5 mx-auto lg:px-5">
-        <h2 className="pt-3 text-2xl font-bold text-gray-800 lg:pt-0">
-          {productDetails?.name}
-        </h2>
-
-        <p className="mt-5 font-bold">
-          <span className="text-sm text-primary ">Details</span>
-          <br />
-          Generic name:{" "}
-          <span className="font-normal">{productDetails?.generic}</span>
-        </p>
-        <p className="font-bold">
-          Brand name:{" "}
-          <span className="font-normal">{productDetails?.brand}</span>
-        </p>
-        <p className="font-bold">
-          Dosage form:{" "}
-          <span className="font-normal">{productDetails?.dosage}</span>
-        </p>
-        <p className="font-bold">
-          Drug class:{" "}
-          <span className="font-normal">{productDetails?.class}</span>
-        </p>
-        <div className="mt-3 mr-1 font-displaybold">
-          <span className="mr-2 text-2xl text-red-600 font-displaylight">
-            {(
-              ((parseInt(productDetails?.discount) -
-                parseInt(productDetails?.price)) /
-                parseInt(productDetails?.price)) *
-              100
-            ).toFixed(0)}
-            %
-          </span>
-          <span className="text-4xl font-displaybold text-primary">
-            ${productDetails?.discount}
-          </span>
-          <span className="text-lg text-primary">/pill</span>
-          <div className="font-displaylight">
-            MRP:{" "}
-            <span className="line-through ">${productDetails?.price}/pill</span>
-          </div>
-        </div>
-
-        <p className="pt-5 mb-5 text-sm leading-5 text-gray-500">
-          {productDetails?.description}
-        </p>
-
-        <RadioGroup
-          label="Select delivery route"
-          // defaultValue={"intous"}
-          onChange={(value) => {
-            setDeliveryRoute(value.target.value);
-          }}
-          color="secondary"
-          orientation="horizontal"
-        >
-          {productDetails?.route?.map((routename) => (
-            <Radio
-              key={routename}
-              value={routename}
-              className={
-                deliveryRoute === routename ? activateRadioStyle : radioStyle
-              }
-            >
-              {routename === "intous" ? "India to US" : "US to US"}
-            </Radio>
-          ))}
-        </RadioGroup>
-        <div className="mt-6">
-          <div className="flex w-full gap-1 ">
-            {deliveryRoute === "intous" ? (
-              <>
-                <RadioGroup
-                  label="Select Packing Size"
-                  // defaultValue={"intous"}
-                  onChange={(value) => setPack(value.target.value)}
-                  color="secondary"
-                  orientation="horizontal"
-                >
-                  {productDetails?.packSizeIN?.map((size) => {
-                    return (
-                      <Radio
-                        key={size}
-                        value={size}
-                        className={
-                          pack === size ? activateRadioStyle : radioStyle
-                        }
-                      >
-                        {size}
-                      </Radio>
-                    );
-                  })}
-                  <Radio
-                    value="custom"
-                    className={
-                      pack === "custom" ? activateRadioStyle : radioStyle
-                    }
-                  >
-                    Custom
-                  </Radio>
-                </RadioGroup>
-              </>
-            ) : (
-              <>
-                <RadioGroup
-                  label="Select Packing Size"
-                  // defaultValue={"intous"}
-                  onChange={(value) => setPack(value.target.value)}
-                  color="secondary"
-                  orientation="horizontal"
-                >
-                  {productDetails?.packSizeUS?.map((size) => {
-                    return (
-                      <Radio
-                        key={size}
-                        value={size}
-                        className={
-                          pack === size ? activateRadioStyle : radioStyle
-                        }
-                      >
-                        {size}
-                      </Radio>
-                    );
-                  })}
-                  <Radio
-                    value="custom"
-                    className={
-                      pack === "custom" ? activateRadioStyle : radioStyle
-                    }
-                  >
-                    Custom
-                  </Radio>
-                </RadioGroup>
-              </>
-            )}
-          </div>
-        </div>
-
-        {pack === "custom" ? (
-          <>
-            <div className="mt-6">
-              <p className="pb-2 text-gray-500 text-md">
-                Custom quantity (more than 60)
-              </p>
-              <input
-                type="number"
-                placeholder="Enter quantity"
-                className="px-4 py-2 text-sm border-gray-300 rounded-md w-fit border-1"
-                min={60}
-              />
-            </div>
-          </>
+    <>
+      <Toaster richColors />
+      <section className="container flex-grow mx-auto max-w-[1200px] border-b py-5 text-gray-800 lg:grid lg:grid-cols-2 lg:py-10">
+        {/* image gallery */}
+        {imageOpen === true ? (
+          <Button
+            color="secondary"
+            size="lg"
+            className="absolute z-50 text-white left-5 top-5 "
+            onClick={() => {
+              handleOpen();
+            }}
+          >
+            Back
+          </Button>
         ) : null}
-        <div className="flex flex-row items-center gap-6 mt-7">
-          <Button className="my-3 view" color="secondary" size="lg">
-            Add to Cart
-          </Button>
-          <Button className="my-3 view " color="secondary" size="lg">
-            Buy now
-          </Button>
+
+        <div className={imageOpen ? openImageStyle : closedImageStyle}>
+          <ReactImageGallery
+            showBullets={false}
+            showPlayButton={false}
+            infinite={true}
+            lazyLoad={true}
+            showFullscreenButton={false}
+            items={productImages?.images}
+            onClick={(e) => {
+              handleOpen();
+            }}
+          />
+
+          {/* /image gallery  */}
         </div>
-      </div>
-    </section>
+
+        {/* description  */}
+
+        <div className="px-5 mx-auto lg:px-5">
+          <h2 className="pt-3 text-2xl font-bold text-gray-800 lg:pt-0">
+            {productDetails?.name}
+          </h2>
+
+          <p className="mt-5 font-bold">
+            <span className="text-sm text-primary ">Details</span>
+            <br />
+            Generic name:{" "}
+            <span className="font-normal">{productDetails?.generic}</span>
+          </p>
+          <p className="font-bold">
+            Brand name:{" "}
+            <span className="font-normal">{productDetails?.brand}</span>
+          </p>
+          <p className="font-bold">
+            Dosage form:{" "}
+            <span className="font-normal">{productDetails?.dosage}</span>
+          </p>
+          <p className="font-bold">
+            Drug class:{" "}
+            <span className="font-normal">{productDetails?.class}</span>
+          </p>
+          <div className="mt-3 mr-1 font-displaybold">
+            <span className="mr-2 text-2xl text-red-600 font-displaylight">
+              {(
+                ((parseInt(productDetails?.discount) -
+                  parseInt(productDetails?.price)) /
+                  parseInt(productDetails?.price)) *
+                100
+              ).toFixed(0)}
+              %
+            </span>
+            <span className="text-4xl font-displaybold text-primary">
+              ${productDetails?.discount}
+            </span>
+            <span className="text-lg text-primary">/pill</span>
+            <div className="font-displaylight">
+              MRP:{" "}
+              <span className="line-through ">
+                ${productDetails?.price}/pill
+              </span>
+            </div>
+          </div>
+
+          <p className="pt-5 mb-5 text-sm leading-5 text-gray-500">
+            {productDetails?.description}
+          </p>
+
+          <RadioGroup
+            label="Select delivery route"
+            // defaultValue={"intous"}
+            onChange={(value) => {
+              setDeliveryRoute(value.target.value);
+              setPack();
+            }}
+            color="secondary"
+            orientation="horizontal"
+          >
+            {productDetails?.route?.map((routename) => (
+              <Radio
+                key={routename}
+                value={routename}
+                className={
+                  deliveryRoute === routename ? activateRadioStyle : radioStyle
+                }
+              >
+                {routename === "intous" ? "India to US" : "US to US"}
+              </Radio>
+            ))}
+          </RadioGroup>
+          <div className="mt-6">
+            <div className="flex w-full gap-1 ">
+              {deliveryRoute === "intous" ? (
+                <>
+                  <RadioGroup
+                    label="Select Packing Size"
+                    // defaultValue={"intous"}
+                    onChange={(value) => setPack(value.target.value)}
+                    color="secondary"
+                    orientation="horizontal"
+                  >
+                    {productDetails?.packSizeIN
+                      ?.sort((a, b) => a - b)
+                      ?.map((size) => {
+                        return (
+                          <Radio
+                            key={size}
+                            value={size}
+                            className={
+                              pack === size ? activateRadioStyle : radioStyle
+                            }
+                          >
+                            {size} Pills
+                          </Radio>
+                        );
+                      })}
+                  </RadioGroup>
+                </>
+              ) : null}
+              {deliveryRoute === "ustous" ? (
+                <>
+                  <RadioGroup
+                    label="Select Packing Size"
+                    // defaultValue={"intous"}
+                    onChange={(value) => setPack(value.target.value)}
+                    color="secondary"
+                    orientation="horizontal"
+                  >
+                    {productDetails?.packSizeUS
+                      ?.sort((a, b) => a - b)
+                      ?.map((size) => {
+                        return (
+                          <Radio
+                            key={size}
+                            value={size}
+                            className={
+                              pack === size ? activateRadioStyle : radioStyle
+                            }
+                          >
+                            {size} Pills
+                          </Radio>
+                        );
+                      })}
+                  </RadioGroup>
+                </>
+              ) : null}
+            </div>
+          </div>
+
+          {deliveryRoute === "intous" ? (
+            <>
+              <div className="mt-6">
+                <p className="pb-2 text-gray-500 text-md">
+                  Custom quantity (more than 60)
+                </p>
+                <input
+                  type="number"
+                  placeholder="Enter quantity"
+                  className="px-4 py-2 text-sm border-gray-300 rounded-md w-fit border-1"
+                  min={60}
+                  onChange={(e) => {
+                    setPack(e.target.value);
+                  }}
+                />
+              </div>
+            </>
+          ) : null}
+          <div className="flex flex-row items-center gap-6 mt-7">
+            <Button
+              className="my-3 view"
+              color="secondary"
+              size="lg"
+              onClick={() => {
+                isLoggedIn
+                  ? saveProductToCartIfLoggedin()
+                  : saveProductToCart();
+              }}
+            >
+              Add to Cart
+            </Button>
+            <Button className="my-3 view " color="secondary" size="lg">
+              Buy now
+            </Button>
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 

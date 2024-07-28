@@ -29,7 +29,7 @@ const Toastalert = () => {
     };
   });
 
-  return <Toaster richColors />;
+  return <Toaster richColors duration={4000} />;
 };
 
 export default Toastalert;

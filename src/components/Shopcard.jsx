@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@nextui-org/react";
 function Shopcard({ title, price, discountedPrice, description, mainImage }) {
   return (
-    <div className="flex p-3 mb-5 break-words duration-300 ease-in-out cursor-pointer h-52 rounded-xl hover border-1 hover:shadow-lg">
+    <div className="flex p-3 mb-5 duration-300 ease-in-out cursor-pointer min:h-52 rounded-xl hover border-1 hover:shadow-lg">
       <div className="relative flex-shrink-0 overflow-hidden w-36 sm:w-56 rounded-xl h-44">
         <img
           className="absolute top-0 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 size-full start-0 rounded-xl"
@@ -12,7 +12,7 @@ function Shopcard({ title, price, discountedPrice, description, mainImage }) {
         />
       </div>
       <div className="px-4 mt-0 overflow-hidden grow sm:ms-6 sm:px-0">
-        <h3 className="mt-2 text-xl font-semibold text-gray-800 wrap max-w-64 group-hover:text-gray-600">
+        <h3 className="mt-2 text-lg font-semibold text-gray-800 sm:text-xl max-w-64 group-hover:text-gray-600">
           {title}
         </h3>
         <p className="flex flex-col mt-1 text-gray-600">
