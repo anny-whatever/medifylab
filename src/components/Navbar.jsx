@@ -8,18 +8,46 @@ import {
   DropdownItem,
   Button,
   Avatar,
+  user,
 } from "@nextui-org/react";
 import { Link, useLocation } from "react-router-dom";
 
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/config";
 import { AuthContext } from "../utils/authContext.js";
+import { easeIn } from "framer-motion/dom";
 
 // import whatsapp from "../assets/img/whatsapp.svg";
+import { db } from "../utils/config";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 function Navbar() {
-  let { userInfo, isLoggedIn } = useContext(AuthContext);
+  let { userInfo, isLoggedIn, userData } = useContext(AuthContext);
+  const [cart, setCart] = useState([]);
   const location = useLocation();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      const cart = JSON.parse(localStorage.getItem("cart"));
+      setCart(cart);
+    } else if (userData?.cart) {
+      setCart(userData?.cart);
+    }
+
+    if (isLoggedIn && userData) {
+      let cart = [];
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+
+      cart?.map(async (item) => {
+        await updateDoc(doc(db, "users", userInfo?.uid), {
+          cart: arrayUnion(item),
+        });
+        localStorage.clear();
+      });
+    }
+  }, [isLoggedIn, userData]);
 
   const buttonStyle =
     "py-2.5 px-5 bg-transparent text-md text-white hover:bg-secondary hover:bg-opacity-80 rounded-lg duration-300 ease-in-out w-11/12 lg:w-auto";
@@ -181,6 +209,11 @@ function Navbar() {
                     d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
                   />
                 </svg>
+                {cart?.length > 0 ? (
+                  <div className="z-50 px-2 py-0.5 text-xs rounded-full text-textColor p- top-5 count bg-accent">
+                    {cart?.length}
+                  </div>
+                ) : null}
               </Button>
             </Link>
 
