@@ -8,7 +8,7 @@ import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { DataContext } from "../utils/dataContext";
 import { AuthContext } from "../utils/authContext";
 import { Toaster, toast } from "sonner";
-function Cartpanel({ cartpid, pid, qty, route, pack }) {
+function Cartpanel({ cartpid, pid, qty, route, pack, price }) {
   const { products } = useContext(DataContext);
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
   const [productDetails, setProductDetails] = useState([]);
@@ -22,7 +22,7 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
     console.log("sfihsdiuf");
   }, [products]);
 
-  function incrementQtyLocal() {
+  const incrementQtyLocal = () => {
     let array = JSON.parse(localStorage.getItem("cart")) || [];
 
     // Find the index of the object to update
@@ -41,9 +41,9 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
     }
 
     window.location.reload();
-  }
+  };
 
-  function decrementQtyLocal() {
+  const decrementQtyLocal = () => {
     let array = JSON.parse(localStorage.getItem("cart")) || [];
 
     // Find the index of the object to update
@@ -62,20 +62,27 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
     }
 
     window.location.reload();
-  }
+  };
 
-  function removeLocal() {
+  const removeLocal = () => {
     let array = JSON.parse(localStorage.getItem("cart")) || [];
     const index = array.findIndex((obj) => obj.cartpid === cartpid);
     let updatedCart = [...array.slice(0, index), ...array.slice(index + 1)];
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     toast.success("Item Removed successfully");
     window.location.reload();
-  }
+  };
 
   const handleRemove = async () => {
     await updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayRemove({ uuid: pid, qty: qty, route: route, pack: pack }),
+      cart: arrayRemove({
+        cartpid: cartpid,
+        uuid: pid,
+        qty: qty,
+        route: route,
+        pack: pack,
+        price: price,
+      }),
     }).catch((error) => {
       console.log(error);
     });
@@ -90,6 +97,7 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
         qty: qty + 1,
         route: route,
         pack: pack,
+        price: price,
       }),
     });
     updateDoc(doc(db, "users", userInfo?.uid), {
@@ -99,10 +107,11 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
         qty: qty,
         route: route,
         pack: pack,
+        price: price,
       }),
     });
     toast.success("Item Quantity Increased successfully");
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleDecrementQty = async () => {
@@ -113,6 +122,7 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
         qty: qty - 1,
         route: route,
         pack: pack,
+        price: price,
       }),
     });
     updateDoc(doc(db, "users", userInfo?.uid), {
@@ -122,10 +132,11 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
         qty: qty,
         route: route,
         pack: pack,
+        price: price,
       }),
     });
     toast.success("Item Quantity Decreased successfully");
-    window.location.reload();
+    // window.location.reload();
   };
 
   const isBtnDisabled = () => {
@@ -207,20 +218,45 @@ function Cartpanel({ cartpid, pid, qty, route, pack }) {
                 <Button
                   isDisabled={isBtnDisabled()}
                   size="sm"
-                  variant="flat"
-                  color="danger"
+                  className="bg-transparent hover:bg-red-500 hover:bg-opacity-30"
                   onClick={isLoggedIn ? handleDecrementQty : decrementQtyLocal}
                 >
-                  -
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-plus"
+                  >
+                    <path d="M5 12h14" />
+                  </svg>
                 </Button>
                 <span className="mx-3">{localQty ? localQty : qty}</span>
                 <Button
                   size="sm"
-                  variant="flat"
-                  color="secondary"
+                  className="bg-transparent hover:bg-green-500 hover:bg-opacity-30"
                   onClick={isLoggedIn ? handleIncrementQty : incrementQtyLocal}
                 >
-                  +
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-plus"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="M12 5v14" />
+                  </svg>
                 </Button>
               </div>
             </div>

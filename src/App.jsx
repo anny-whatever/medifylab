@@ -42,6 +42,7 @@ import { onAuthStateChanged } from "firebase/auth";
 function App() {
   const [userInfo, setUserInfo] = useState();
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userData, setUserData] = useState();
 
   const [products, setProducts] = useState([]);
 
@@ -60,9 +61,16 @@ function App() {
   useEffect(() => {
     const unsub = onSnapshot(doc(db, "site", "products"), (doc) => {
       setProducts(doc.data());
-      // console.log(doc.data());
     });
   }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      const unsub = onSnapshot(doc(db, "users", userInfo?.uid), (doc) => {
+        setUserData(doc.data());
+      });
+    }
+  }, [userInfo]);
 
   // const test = async () => {
   //   console.time("test");
@@ -82,31 +90,33 @@ function App() {
   return (
     <>
       {/* <NavbarComponent /> */}
-      <AuthContext.Provider value={{ userInfo, isLoggedIn }}>
+      <AuthContext.Provider value={{ userInfo, isLoggedIn, userData }}>
         <DataContext.Provider value={{ products }}>
           <Toastalert />
-          <Navbar />
+          <div className="min-h-[60vh]">
+            <Navbar />
 
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route
-              path="/login"
-              element={userInfo ? <Navigate to="/" replace /> : <Login />}
-            />
-            <Route
-              path="/register"
-              element={userInfo ? <Navigate to="/" replace /> : <Register />}
-            />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product/:productId" element={<Product />} />
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/contacts" element={<Contacts />} />
+              <Route
+                path="/login"
+                element={userInfo ? <Navigate to="/" replace /> : <Login />}
+              />
+              <Route
+                path="/register"
+                element={userInfo ? <Navigate to="/" replace /> : <Register />}
+              />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/product/:productId" element={<Product />} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </div>
           <Footer />
         </DataContext.Provider>
       </AuthContext.Provider>
