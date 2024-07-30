@@ -5,7 +5,7 @@ import { AuthContext } from "../utils/authContext.js";
 
 import { Button, user } from "@nextui-org/react";
 import { RadioGroup, Radio } from "@nextui-org/radio";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem, Input } from "@nextui-org/react";
 
 import { useParams, Navigate } from "react-router-dom";
 import { Toaster, toast } from "sonner";
@@ -14,6 +14,7 @@ import { db } from "../utils/config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 import { v4 as uuidv4 } from "uuid";
+import { decl } from "postcss";
 
 const Productpanel = () => {
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
@@ -125,6 +126,45 @@ const Productpanel = () => {
       }
     }
   };
+
+  const handleBuyNow = () => {
+    let deliveryCost;
+    let india = 0;
+    let us = 0;
+    if (deliveryRoute == "intous") {
+      deliveryCost = 40;
+      india = 40;
+    } else {
+      deliveryCost = 70;
+      us = 70;
+    }
+    const total = productDetails?.discount + deliveryCost;
+
+    const product = {
+      uuid: productDetails?.uuid,
+      route: deliveryRoute,
+      pack: pack,
+      qty: 1,
+      price: productDetails?.discount,
+    };
+
+    if (!deliveryRoute || !pack) {
+      toast.error("Please select delivery route and pack size");
+    } else {
+      window.location.href =
+        "/checkout?orderId=" +
+        uuidv4() +
+        "&products=" +
+        JSON.stringify([product]) +
+        "&total=" +
+        total +
+        "&shippingIndia=" +
+        india +
+        "&shippingUs=" +
+        us;
+    }
+  };
+
   return (
     <>
       <Toaster richColors />
@@ -236,56 +276,38 @@ const Productpanel = () => {
             <div className="flex w-full gap-1 ">
               {deliveryRoute === "intous" ? (
                 <>
-                  <RadioGroup
-                    label="Select Packing Size"
-                    // defaultValue={"intous"}
-                    onChange={(value) => setPack(value.target.value)}
-                    color="secondary"
-                    orientation="horizontal"
+                  <Select
+                    label="Select Quantity"
+                    className="max-w-xs"
+                    onChange={(value) => {
+                      setPack(value.target.value);
+                      // console.log(value.target.value);
+                    }}
                   >
                     {productDetails?.packSizeIN
                       ?.sort((a, b) => a - b)
                       ?.map((size) => {
-                        return (
-                          <Radio
-                            key={size}
-                            value={size}
-                            className={
-                              pack === size ? activateRadioStyle : radioStyle
-                            }
-                          >
-                            {size} Pills
-                          </Radio>
-                        );
+                        return <SelectItem key={size}>{size}</SelectItem>;
                       })}
-                  </RadioGroup>
+                  </Select>
                 </>
               ) : null}
               {deliveryRoute === "ustous" ? (
                 <>
-                  <RadioGroup
-                    label="Select Packing Size"
-                    // defaultValue={"intous"}
-                    onChange={(value) => setPack(value.target.value)}
-                    color="secondary"
-                    orientation="horizontal"
+                  <Select
+                    label="Select Quantity"
+                    className="max-w-xs"
+                    onChange={(value) => {
+                      setPack(value.target.value);
+                      // console.log(value.target.value);
+                    }}
                   >
                     {productDetails?.packSizeUS
                       ?.sort((a, b) => a - b)
                       ?.map((size) => {
-                        return (
-                          <Radio
-                            key={size}
-                            value={size}
-                            className={
-                              pack === size ? activateRadioStyle : radioStyle
-                            }
-                          >
-                            {size} Pills
-                          </Radio>
-                        );
+                        return <SelectItem key={size}>{size}</SelectItem>;
                       })}
-                  </RadioGroup>
+                  </Select>
                 </>
               ) : null}
             </div>
@@ -297,11 +319,12 @@ const Productpanel = () => {
                 <p className="pb-2 text-gray-500 text-md">
                   Custom quantity (more than 60)
                 </p>
-                <input
+                <Input
                   type="number"
                   placeholder="Enter quantity"
-                  className="px-4 py-2 text-sm border-gray-300 rounded-md w-fit border-1"
+                  className="py-2 text-sm w-fit"
                   min={60}
+                  size="lg"
                   onChange={(e) => {
                     setPack(e.target.value);
                   }}
@@ -322,7 +345,12 @@ const Productpanel = () => {
             >
               Add to Cart
             </Button>
-            <Button className="my-3 view " color="secondary" size="lg">
+            <Button
+              className="my-3 view "
+              color="secondary"
+              size="lg"
+              onClick={handleBuyNow}
+            >
               Buy now
             </Button>
           </div>
