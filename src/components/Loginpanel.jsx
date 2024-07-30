@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 
 function Loginpanel({ handleEmailSignUp, handleGoogleSignIn }) {
   const [email, setEmail] = useState();

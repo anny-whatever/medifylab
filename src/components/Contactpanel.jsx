@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Input, Textarea } from "@nextui-org/react";
 
 function Contactpanel() {
   return (
@@ -32,11 +32,10 @@ function Contactpanel() {
                       >
                         First Name
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="hs-firstname-contacts-1"
                         id="hs-firstname-contacts-1"
-                        className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                         placeholder="First Name"
                       />
                     </div>
@@ -47,11 +46,10 @@ function Contactpanel() {
                       >
                         Last Name
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="hs-lastname-contacts-1"
                         id="hs-lastname-contacts-1"
-                        className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                         placeholder="Last Name"
                       />
                     </div>
@@ -61,12 +59,11 @@ function Contactpanel() {
                     <label htmlFor="hs-email-contacts-1" className="sr-only">
                       Email
                     </label>
-                    <input
+                    <Input
                       type="email"
                       name="hs-email-contacts-1"
                       id="hs-email-contacts-1"
                       autoComplete="email"
-                      className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Email"
                     />
                   </div>
@@ -74,11 +71,10 @@ function Contactpanel() {
                     <label htmlFor="hs-phone-number-1" className="sr-only">
                       Phone Number
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="hs-phone-number-1"
                       id="hs-phone-number-1"
-                      className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg border-1 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                       placeholder="Phone Number"
                     />
                   </div>
@@ -86,13 +82,17 @@ function Contactpanel() {
                     <label htmlFor="hs-about-contacts-1" className="sr-only">
                       Details
                     </label>
-                    <textarea
+                    <Textarea
                       id="hs-about-contacts-1"
                       name="hs-about-contacts-1"
                       rows={4}
-                      className="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none border-1"
                       placeholder="Details"
                       defaultValue={""}
+                      disableAnimation
+                      disableAutosize
+                      classNames={{
+                        input: "resize-y min-h-[80px]",
+                      }}
                     />
                   </div>
                 </div>
