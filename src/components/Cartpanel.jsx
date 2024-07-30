@@ -6,6 +6,9 @@ import Cartcard from "./Cartcard";
 import { DataContext } from "../utils/dataContext";
 import { AuthContext } from "../utils/authContext.js";
 import { useContext } from "react";
+
+import { v4 as uuidv4 } from "uuid";
+import { Navigate } from "react-router-dom";
 function Cartpanel() {
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
   const { products } = useContext(DataContext);
@@ -71,7 +74,33 @@ function Cartpanel() {
       calculateTotal(userData?.cart);
     }
   }, [cart, userData]);
-  // console.log(userData);
+
+  const handlePlaceOrder = async () => {
+    if (cart?.length > 0) {
+      const order = {
+        orderId: uuidv4(),
+
+        products: cart,
+        total: subtotal,
+        shippingIndia: shippingIndia,
+        shippingUs: shippingUs,
+      };
+      window.location.href =
+        "/checkout?orderId=" +
+        order.orderId +
+        "&products=" +
+        JSON.stringify(order.products) +
+        "&total=" +
+        order.total +
+        "&shippingIndia=" +
+        order.shippingIndia +
+        "&shippingUs=" +
+        order.shippingUs +
+        "&checkOutFrom=" +
+        "cart";
+    }
+  };
+
   return (
     <>
       <div className="w-3/5 pl-3 mx-auto mt-5 mb-10 text-center lg:mb-6">
@@ -128,14 +157,20 @@ function Cartpanel() {
               <p className="">${subtotal}</p>
             </span>
             <hr />
-            <span className="flex justify-between text-sm">
-              <p>Shipping India to US</p>
-              <p className="">${shippingIndia}</p>
-            </span>
-            <span className="flex justify-between text-sm">
-              <p>Shipping US to US</p>
-              <p className="">${shippingUs}</p>
-            </span>
+            {shippingIndia > 0 ? (
+              <span className="flex justify-between text-sm">
+                <p>Shipping India to US</p>
+                <p className="">${shippingIndia}</p>
+              </span>
+            ) : null}
+
+            {shippingUs > 0 ? (
+              <span className="flex justify-between text-sm">
+                <p>Shipping US to US</p>
+                <p className="">${shippingUs}</p>
+              </span>
+            ) : null}
+
             <hr />
             <span className="flex justify-between ">
               <p>Total Shipping</p>
@@ -147,7 +182,11 @@ function Cartpanel() {
               <p>Total</p>
               <p className="">${subtotal + shippingIndia + shippingUs}</p>
             </span>
-            <Button color="primary" className="w-full mt-5">
+            <Button
+              color="secondary"
+              onClick={handlePlaceOrder}
+              className="w-full mt-5"
+            >
               Place order
             </Button>
           </div>
