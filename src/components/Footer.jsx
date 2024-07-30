@@ -81,7 +81,7 @@ function Footer() {
                 <p>
                   <a
                     className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
+                    href="/contacts"
                   >
                     Contact us
                   </a>
@@ -89,7 +89,7 @@ function Footer() {
                 <p>
                   <a
                     className="inline-flex text-gray-400 gap-x-2 hover:text-gray-200"
-                    href="#"
+                    href="/about"
                   >
                     About us
                   </a>

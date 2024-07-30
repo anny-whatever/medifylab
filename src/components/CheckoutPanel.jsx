@@ -229,7 +229,7 @@ function CheckoutPanel() {
         info.lastName !== "" &&
         info.phoneNumber !== "" &&
         info.streetAddressBilling !== "" &&
-        info.apartmentBilling !== "" &&
+        // info.apartmentBilling !== "" &&
         info.cityBilling !== "" &&
         info.stateBilling !== "" &&
         info.zipCodeBilling !== "" &&
@@ -245,7 +245,7 @@ function CheckoutPanel() {
         info.lastName !== "" &&
         info.phoneNumber !== "" &&
         info.streetAddressBilling !== "" &&
-        info.apartmentBilling !== "" &&
+        // info.apartmentBilling !== "" &&
         info.cityBilling !== "" &&
         info.stateBilling !== "" &&
         info.zipCodeBilling !== "" &&
@@ -278,10 +278,6 @@ function CheckoutPanel() {
     toast.success("A user from " + info.state + " just made a purchase!");
     onOpen();
   };
-
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
 
   return (
     <>
@@ -316,7 +312,14 @@ function CheckoutPanel() {
                 <p>Thank you for your patience.</p>
               </ModalBody>
               <ModalFooter>
-                <Button color="secondary" variant="light" onPress={onClose}>
+                <Button
+                  color="secondary"
+                  variant="light"
+                  onPress={() => {
+                    onClose();
+                    window.location.href = "/";
+                  }}
+                >
                   Okay
                 </Button>
               </ModalFooter>
@@ -400,12 +403,6 @@ function CheckoutPanel() {
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <Input
                       type="text"
-                      placeholder="Zip Code"
-                      name="zipCodeBilling"
-                      onChange={(e) => handleInfoEnter(e)}
-                    />
-                    <Input
-                      type="text"
                       placeholder="City"
                       name="cityBilling"
                       onChange={(e) => handleInfoEnter(e)}
@@ -422,6 +419,12 @@ function CheckoutPanel() {
                         </SelectItem>
                       ))}
                     </Select>
+                    <Input
+                      type="text"
+                      placeholder="Zip Code"
+                      name="zipCodeBilling"
+                      onChange={(e) => handleInfoEnter(e)}
+                    />
                   </div>
                 </div>
               </div>
@@ -462,12 +465,6 @@ function CheckoutPanel() {
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <Input
                         type="text"
-                        placeholder="Zip Code"
-                        name="zipCodeShipping"
-                        onChange={(e) => handleInfoEnter(e)}
-                      />
-                      <Input
-                        type="text"
                         placeholder="City"
                         name="cityShipping"
                         onChange={(e) => handleInfoEnter(e)}
@@ -483,6 +480,12 @@ function CheckoutPanel() {
                           </SelectItem>
                         ))}
                       </Select>
+                      <Input
+                        type="text"
+                        placeholder="Zip Code"
+                        name="zipCodeShipping"
+                        onChange={(e) => handleInfoEnter(e)}
+                      />
                     </div>
                   </div>
                 )}

@@ -25,7 +25,7 @@ function Bestseller() {
         </div>
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-y-16">
           {/* Card */}
-          {products?.productsArray?.slice(0, 4).map((product) => (
+          {products?.productsArray?.slice(3, 4).map((product) => (
             <a
               key={product.uuid}
               className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm cursor-pointer group rounded-xl hover:shadow-lg"
