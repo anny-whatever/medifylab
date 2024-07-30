@@ -115,15 +115,6 @@ function Shoppanel() {
               );
             }
           })}
-
-          {/* <Shopcard
-          // key={product.uuid}
-          // title={product.name}
-          // price={product.price}
-          // discountedPrice={product.discount}
-          // description={product.description}
-          // mainImage={product.mainImage}
-          /> */}
         </div>
       </div>
       {totalPages > 1 && (
