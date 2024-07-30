@@ -10,6 +10,8 @@ import { CircularProgress } from "@nextui-org/react";
 import { CheckboxGroup, Checkbox } from "@nextui-org/react";
 import { RadioGroup, Radio } from "@nextui-org/react";
 
+import { Select, SelectItem } from "@nextui-org/react";
+
 function NewProductUpload() {
   const [uuid, setUuid] = useState("");
 
@@ -176,7 +178,7 @@ function NewProductUpload() {
                     <div className="flex items-center gap-x-2">
                       <input
                         type="file"
-                        accept="image/png, image/jpeg"
+                        accept="image/*"
                         onChange={handleChange}
                         className=" file:text-sm file:bg-white file:border-1 file:border-gray-300 file:rounded-lg file:shadow-sm file:hover:bg-gray-50 file:disabled:opacity-50 file:disabled:pointer-events-none file:focus:outline-none file:focus:bg-gray-50 file:py-2 file:cursor-pointer"
                       />
@@ -220,7 +222,7 @@ function NewProductUpload() {
                     <div className="flex items-center gap-x-2">
                       <input
                         type="file"
-                        accept="image/png, image/jpeg"
+                        accept="image/*"
                         onChange={handleChangeSecondary}
                         className=" file:text-sm file:bg-white file:border-1 file:border-gray-300 file:rounded-lg file:shadow-sm file:hover:bg-gray-50 file:disabled:opacity-50 file:disabled:pointer-events-none file:focus:outline-none file:focus:bg-gray-50 file:py-2 file:cursor-pointer"
                       />
@@ -414,21 +416,54 @@ function NewProductUpload() {
                       setProdPackSizeUS(e);
                     }}
                   >
-                    <Checkbox value="60">60 Pills</Checkbox>
-                    <Checkbox value="70">70 Pills</Checkbox>
-                    <Checkbox value="80">80 Pills</Checkbox>
-                    <Checkbox value="90">90 Pills</Checkbox>
-                    <Checkbox value="100">100 Pills</Checkbox>
-                    <Checkbox value="110">110 Pills</Checkbox>
-                    <Checkbox value="120">120 Pills</Checkbox>
-                    <Checkbox value="130">130 Pills</Checkbox>
-                    <Checkbox value="140">140 Pills</Checkbox>
-                    <Checkbox value="150">150 Pills</Checkbox>
-                    <Checkbox value="160">160 Pills</Checkbox>
-                    <Checkbox value="170">170 Pills</Checkbox>
-                    <Checkbox value="180">180 Pills</Checkbox>
-                    <Checkbox value="190">190 Pills</Checkbox>
-                    <Checkbox value="200">200 Pills</Checkbox>
+                    <Checkbox value="90">90</Checkbox>
+                    <Checkbox value="180">180</Checkbox>
+                    <Checkbox value="270">270</Checkbox>
+                    <Checkbox value="360">360</Checkbox>
+                    <Checkbox value="450">450</Checkbox>
+                    <Checkbox value="540">540</Checkbox>
+                    <Checkbox value="630">630</Checkbox>
+                    <Checkbox value="720">720</Checkbox>
+                    <Checkbox value="810">810</Checkbox>
+                    <Checkbox value="900">900</Checkbox>
+                    <Checkbox value="1080">1080</Checkbox>
+                    <Checkbox value="1260">1260</Checkbox>
+                    <Checkbox value="1440">1440</Checkbox>
+                    <Checkbox value="1620">1620</Checkbox>
+                    <Checkbox value="1800">1800</Checkbox>
+
+                    <br />
+                    <Checkbox value="1">1</Checkbox>
+                    <Checkbox value="2">2</Checkbox>
+                    <Checkbox value="3">3</Checkbox>
+                    <Checkbox value="4">4</Checkbox>
+                    <Checkbox value="5">5</Checkbox>
+                    <Checkbox value="6">6</Checkbox>
+                    <Checkbox value="7">7</Checkbox>
+                    <Checkbox value="8">8</Checkbox>
+                    <Checkbox value="9">9</Checkbox>
+                    <Checkbox value="10">10</Checkbox>
+                    <Checkbox value="11">11</Checkbox>
+                    <Checkbox value="12">12</Checkbox>
+                    <Checkbox value="13">13</Checkbox>
+                    <Checkbox value="14">14</Checkbox>
+                    <Checkbox value="15">15</Checkbox>
+                    <Checkbox value="16">16</Checkbox>
+                    <Checkbox value="17">17</Checkbox>
+                    <Checkbox value="18">18</Checkbox>
+                    <Checkbox value="19">19</Checkbox>
+                    <Checkbox value="20">20</Checkbox>
+                    <Checkbox value="60">60</Checkbox>
+                    <Checkbox value="80">80</Checkbox>
+                    <Checkbox value="100">100</Checkbox>
+                    <Checkbox value="150">150</Checkbox>
+                    <Checkbox value="200">200</Checkbox>
+                    <Checkbox value="250">250</Checkbox>
+                    <Checkbox value="300">300</Checkbox>
+                    <Checkbox value="350">350</Checkbox>
+                    <Checkbox value="400">400</Checkbox>
+                    <Checkbox value="450">450</Checkbox>
+                    <Checkbox value="500">500</Checkbox>
                   </CheckboxGroup>
                 </div>
               </div>
@@ -451,21 +486,37 @@ function NewProductUpload() {
                       setProdPackSizeIN(e);
                     }}
                   >
-                    <Checkbox value="60">60 Pills</Checkbox>
-                    <Checkbox value="70">70 Pills</Checkbox>
-                    <Checkbox value="80">80 Pills</Checkbox>
-                    <Checkbox value="90">90 Pills</Checkbox>
-                    <Checkbox value="100">100 Pills</Checkbox>
-                    <Checkbox value="110">110 Pills</Checkbox>
-                    <Checkbox value="120">120 Pills</Checkbox>
-                    <Checkbox value="130">130 Pills</Checkbox>
-                    <Checkbox value="140">140 Pills</Checkbox>
-                    <Checkbox value="150">150 Pills</Checkbox>
-                    <Checkbox value="160">160 Pills</Checkbox>
-                    <Checkbox value="170">170 Pills</Checkbox>
-                    <Checkbox value="180">180 Pills</Checkbox>
-                    <Checkbox value="190">190 Pills</Checkbox>
-                    <Checkbox value="200">200 Pills</Checkbox>
+                    <Checkbox value="1">1</Checkbox>
+                    <Checkbox value="2">2</Checkbox>
+                    <Checkbox value="3">3</Checkbox>
+                    <Checkbox value="4">4</Checkbox>
+                    <Checkbox value="5">5</Checkbox>
+                    <Checkbox value="6">6</Checkbox>
+                    <Checkbox value="7">7</Checkbox>
+                    <Checkbox value="8">8</Checkbox>
+                    <Checkbox value="9">9</Checkbox>
+                    <Checkbox value="10">10</Checkbox>
+                    <Checkbox value="11">11</Checkbox>
+                    <Checkbox value="12">12</Checkbox>
+                    <Checkbox value="13">13</Checkbox>
+                    <Checkbox value="14">14</Checkbox>
+                    <Checkbox value="15">15</Checkbox>
+                    <Checkbox value="16">16</Checkbox>
+                    <Checkbox value="17">17</Checkbox>
+                    <Checkbox value="18">18</Checkbox>
+                    <Checkbox value="19">19</Checkbox>
+                    <Checkbox value="20">20</Checkbox>
+                    <Checkbox value="60">60</Checkbox>
+                    <Checkbox value="80">80</Checkbox>
+                    <Checkbox value="100">100</Checkbox>
+                    <Checkbox value="150">150</Checkbox>
+                    <Checkbox value="200">200</Checkbox>
+                    <Checkbox value="250">250</Checkbox>
+                    <Checkbox value="300">300</Checkbox>
+                    <Checkbox value="350">350</Checkbox>
+                    <Checkbox value="400">400</Checkbox>
+                    <Checkbox value="450">450</Checkbox>
+                    <Checkbox value="500">500</Checkbox>
                   </CheckboxGroup>
                 </div>
               </div>
