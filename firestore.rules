@@ -2,8 +2,29 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write;
+  
+    match /orderHandlers/orders {
+      // Allow all authenticated users to write
+      allow write: if request.auth != null;
+      
+      // Allow read only for a specific email
+      allow read: if request.auth != null && (request.auth.token.email == 'mohdazharmehboobshaikh@gmail.com' || request.auth.token.email == 'fragsteryt@gmail.com');
+    }
+     match /site/products {
+      // Allow all authenticated users to write
+      allow read;
+      
+      // Allow read only for a specific email
+      allow write: if request.auth != null && (request.auth.token.email == 'mohdazharmehboobshaikh@gmail.com' || request.auth.token.email == 'fragsteryt@gmail.com');
+    }
+    
+     match /users/{userId} {
+     
+      allow read, write: if request.auth != null && request.auth.uid == userId || (request.auth.token.email == 'mohdazharmehboobshaikh@gmail.com' || request.auth.token.email == 'fragsteryt@gmail.com');
+    }
+    
+     match /visitorInfo/{document=**}{
+    
+    allow read, write: if request.auth != null && (request.auth.token.email == 'mohdazharmehboobshaikh@gmail.com' || request.auth.token.email == 'fragsteryt@gmail.com');
     }
   }
-}

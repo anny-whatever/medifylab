@@ -22,5 +22,7 @@ module.exports = {
     "no-unused-vars": "off",
     "no-unused-vars-experimental": "off",
     "react/prop-types": "off",
+
+    //disable all warnings
   },
 };

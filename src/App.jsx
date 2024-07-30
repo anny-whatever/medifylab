@@ -112,6 +112,7 @@ function App() {
               />
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:productId" element={<Product />} />
+              <Route path="/checkout" element={<Checkout />} />
 
               <Route path="*" element={<Navigate to="/" replace />} />
               <Route path="/admin" element={<Admin />} />

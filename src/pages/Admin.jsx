@@ -8,6 +8,10 @@ import { db } from "../utils/config";
 
 import NewProductUpload from "../components/NewProductUpload";
 import DeleteProduct from "../components/DeleteProduct";
+import Phonemanage from "../components/Phonemanage";
+import Ordersmanage from "../components/Ordersmanage";
+import Acceptedordersmanage from "../components/Acceptedordersmanage";
+import Deliveredordersmanage from "../components/Deliveredordersmanage";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 function Admin() {
   const { userInfo, isLoggedIn } = useContext(AuthContext);
@@ -66,7 +70,30 @@ function Admin() {
             </Tab>
             <Tab key="Pending Calls" title="Pending Calls">
               <Card className="mx-10 ">
-                <CardBody>Under Development</CardBody>
+                <CardBody>
+                  <Phonemanage />
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key="Pending Orders" title="Pending Orders">
+              <Card className="mx-10 ">
+                <CardBody>
+                  <Ordersmanage />
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key="Accepted Orders" title="Accepted Orders">
+              <Card className="mx-10 ">
+                <CardBody>
+                  <Acceptedordersmanage />
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key="Delivered Orders" title="Delivered Orders">
+              <Card className="mx-10 ">
+                <CardBody>
+                  <Deliveredordersmanage />
+                </CardBody>
               </Card>
             </Tab>
           </Tabs>
