@@ -25,52 +25,56 @@ function Bestseller() {
         </div>
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-y-16">
           {/* Card */}
-          {products?.productsArray?.slice(3, 4).map((product) => (
-            <a
-              key={product.uuid}
-              className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm cursor-pointer group rounded-xl hover:shadow-lg"
-            >
-              <div className="sm:flex">
-                <div className="relative flex-shrink-0 w-full overflow-hidden rounded-xl sm:w-56 h-44">
-                  <img
-                    className="absolute top-0 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 size-full start-0 rounded-xl"
-                    src={product.mainImage}
-                    alt="Image Description"
-                  />
-                </div>
-                <div className="px-4 mt-4 grow sm:mt-0 sm:ms-6 sm:px-0">
-                  <h3 className="mt-2 text-xl font-semibold text-gray-800 group-hover:text-gray-600">
-                    {product.name}
-                  </h3>
-                  <p className="flex flex-col mt-1 text-gray-600">
-                    <span className="mr-1 font-displaybold ">
-                      <span className="mr-2 text-xl text-red-600 font-displaylight">
-                        -
-                        {(
-                          ((product.price - product.discount) / product.price) *
-                          100
-                        ).toFixed(0)}
-                        %
+          {products?.productsArray
+            ?.sort((a, b) => b.discount - a.discount)
+            ?.slice(0, 4)
+            ?.map((product) => (
+              <a
+                key={product.uuid}
+                className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm cursor-pointer group rounded-xl hover:shadow-lg"
+              >
+                <div className="sm:flex">
+                  <div className="relative flex-shrink-0 w-full overflow-hidden rounded-xl sm:w-56 h-44">
+                    <img
+                      className="absolute top-0 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 size-full start-0 rounded-xl"
+                      src={product.mainImage}
+                      alt="Image Description"
+                    />
+                  </div>
+                  <div className="px-4 mt-4 grow sm:mt-0 sm:ms-6 sm:px-0">
+                    <h3 className="mt-2 text-xl font-semibold text-gray-800 group-hover:text-gray-600">
+                      {product.name}
+                    </h3>
+                    <p className="flex flex-col mt-1 text-gray-600">
+                      <span className="mr-1 font-displaybold ">
+                        <span className="mr-2 text-xl text-red-600 font-displaylight">
+                          -
+                          {(
+                            ((product.price - product.discount) /
+                              product.price) *
+                            100
+                          ).toFixed(0)}
+                          %
+                        </span>
+                        <span className="text-2xl font-displaybold text-primary">
+                          ${product.discount}
+                        </span>
+                        <span className="text-md text-primary">/pill</span>
                       </span>
-                      <span className="text-2xl font-displaybold text-primary">
-                        ${product.discount}
+                      <span className="font-displaylight">
+                        MRP:{" "}
+                        <span className="line-through ">${product.price}</span>
                       </span>
-                      <span className="text-md text-primary">/pill</span>
-                    </span>
-                    <span className="font-displaylight">
-                      MRP:{" "}
-                      <span className="line-through ">${product.price}</span>
-                    </span>
-                  </p>
-                  <Link to={`/product/${product.uuid}`}>
-                    <Button className="my-3  view" color="secondary">
-                      View
-                    </Button>
-                  </Link>
+                    </p>
+                    <Link to={`/product/${product.uuid}`}>
+                      <Button className="my-3 view" color="secondary">
+                        View
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))}
         </div>
         <div className="mt-12 text-center">
           <Link to="/shop">
