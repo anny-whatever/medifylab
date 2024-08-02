@@ -3,8 +3,6 @@
 import preline from "preline/plugin";
 
 import { nextui } from "@nextui-org/react";
-import { clamp } from "framer-motion";
-// const preline = require("preline/plugin.js");
 
 export default {
   content: [

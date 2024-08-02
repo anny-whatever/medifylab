@@ -105,7 +105,8 @@ function Features() {
                 Speedy delivery
               </h3>
               <p className="mt-1 text-gray-600">
-                Get your products delivered in the shortest time possible
+                India to USA 15-21 working days. <br /> USA to USA 7-10 Working
+                days.
               </p>
             </div>
           </div>

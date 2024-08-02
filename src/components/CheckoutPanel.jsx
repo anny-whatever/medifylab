@@ -504,20 +504,29 @@ function CheckoutPanel() {
             </span>
             <hr />
             {shippingIndia > 0 ? (
-              <span className="flex justify-between text-sm">
-                <p>Shipping India to US</p>
-                <p className="">${parseFloat(shippingIndia).toFixed(2)}</p>
-              </span>
+              <>
+                <span className="flex items-center justify-between text-sm">
+                  <p>
+                    Shipping India to US
+                    <p className="text-xs">15-21 working days.</p>
+                  </p>
+                  <p className="">${parseFloat(shippingIndia).toFixed(2)}</p>
+                </span>
+              </>
             ) : null}
 
             {shippingUs > 0 ? (
-              <span className="flex justify-between text-sm">
-                <p>Shipping US to US</p>
+              <span className="flex items-center justify-between text-sm">
+                <p>
+                  Shipping US to US
+                  <p className="text-xs">7-10 Working days.</p>
+                </p>
                 <p className="">${parseFloat(shippingUs).toFixed(2)}</p>
               </span>
             ) : null}
 
             <hr />
+
             <span className="flex justify-between ">
               <p>Total Shipping</p>
               <p className="">

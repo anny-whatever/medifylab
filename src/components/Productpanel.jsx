@@ -139,7 +139,6 @@ const Productpanel = () => {
       deliveryCost = 70;
       us = 70;
     }
-    const total = productDetails?.discount + deliveryCost;
 
     const product = {
       uuid: productDetails?.uuid,
@@ -148,6 +147,10 @@ const Productpanel = () => {
       qty: 1,
       price: productDetails?.discount,
     };
+
+    const total =
+      parseFloat(productDetails?.discount) * parseFloat(product.pack) +
+      deliveryCost;
 
     if (!deliveryRoute || !pack) {
       toast.error("Please select delivery route and pack size");
@@ -158,7 +161,7 @@ const Productpanel = () => {
         "&products=" +
         JSON.stringify([product]) +
         "&total=" +
-        total * pack +
+        total +
         "&shippingIndia=" +
         india +
         "&shippingUs=" +
