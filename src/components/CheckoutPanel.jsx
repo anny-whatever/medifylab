@@ -282,7 +282,7 @@ function CheckoutPanel() {
   return (
     <>
       <Toaster richColors />
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -413,7 +413,7 @@ function CheckoutPanel() {
                       name="stateBilling"
                       onChange={(e) => handleInfoEnter(e)}
                     >
-                      {states.map((state) => (
+                      {states?.map((state) => (
                         <SelectItem value={state} key={state}>
                           {state}
                         </SelectItem>
@@ -474,7 +474,7 @@ function CheckoutPanel() {
                         name="stateShipping"
                         onChange={(e) => handleInfoEnter(e)}
                       >
-                        {states.map((state) => (
+                        {states?.map((state) => (
                           <SelectItem value={state} key={state}>
                             {state}
                           </SelectItem>

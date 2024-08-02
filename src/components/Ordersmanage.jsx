@@ -89,7 +89,12 @@ function Ordersmanage() {
   return (
     <>
       <Toaster richColors />
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+      <Modal
+        backdrop="blur"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="full"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -188,7 +193,7 @@ function Ordersmanage() {
         <hr className="mx-5 mt-2" />
         {/* {data?.pendingOrders.reverse()} */}
         {data?.pendingOrders &&
-          [...data.pendingOrders].reverse().map((item, index) => {
+          [...data.pendingOrders].reverse()?.map((item, index) => {
             return (
               <>
                 <div

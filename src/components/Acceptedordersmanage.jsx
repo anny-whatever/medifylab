@@ -89,7 +89,12 @@ function Acceptedordersmanage() {
   return (
     <>
       <Toaster richColors />
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+      <Modal
+        backdrop="blur"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="full"
+      >
         <ModalContent>
           {(onClose) => (
             <>
