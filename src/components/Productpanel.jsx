@@ -15,6 +15,7 @@ import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 import { v4 as uuidv4 } from "uuid";
 import { decl } from "postcss";
+import RelatedProducts from "./RelatedProducts.jsx";
 
 const Productpanel = () => {
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
@@ -356,6 +357,11 @@ const Productpanel = () => {
           </div>
         </div>
       </section>
+
+      <RelatedProducts
+        thisUuid={productDetails?.uuid}
+        category={productDetails?.category}
+      />
     </>
   );
 };

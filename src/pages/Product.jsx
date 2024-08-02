@@ -10,7 +10,6 @@ function Product() {
   return (
     <div>
       <Productpanel />
-      <RelatedProducts />
     </div>
   );
 }
