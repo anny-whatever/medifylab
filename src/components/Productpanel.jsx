@@ -158,7 +158,7 @@ const Productpanel = () => {
         "&products=" +
         JSON.stringify([product]) +
         "&total=" +
-        total +
+        total * pack +
         "&shippingIndia=" +
         india +
         "&shippingUs=" +

@@ -495,7 +495,49 @@ function CheckoutPanel() {
           {/* End Card */}
         </div>
         {/* End Card Section */}
-        <div className="p-5 mt-5 mb-5 shadow-lg lg:w-fit rounded-xl h-fit">
+        <div className="p-5 mt-5 mb-5 shadow-md lg:w-fit rounded-xl h-fit">
+          <div className="flex flex-col p-10 mx-auto bg-opacity-30 h-fit rounded-xl gap-y-5">
+            <p className="text-xl font-semibold">Order summary</p>
+            <span className="flex justify-between">
+              <p>Subtotal</p>
+              <p className="">${parseFloat(total).toFixed(2)}</p>
+            </span>
+            <hr />
+            {shippingIndia > 0 ? (
+              <span className="flex justify-between text-sm">
+                <p>Shipping India to US</p>
+                <p className="">${parseFloat(shippingIndia).toFixed(2)}</p>
+              </span>
+            ) : null}
+
+            {shippingUs > 0 ? (
+              <span className="flex justify-between text-sm">
+                <p>Shipping US to US</p>
+                <p className="">${parseFloat(shippingUs).toFixed(2)}</p>
+              </span>
+            ) : null}
+
+            <hr />
+            <span className="flex justify-between ">
+              <p>Total Shipping</p>
+              <p className="">
+                ${(parseInt(shippingIndia) + parseInt(shippingUs)).toFixed(2)}
+              </p>
+            </span>
+            <hr />
+
+            <span className="flex justify-between text-xl font-semibold">
+              <p>Total</p>
+              <p className="">
+                $
+                {(
+                  parseFloat(total) +
+                  parseFloat(shippingIndia) +
+                  parseFloat(shippingUs)
+                ).toFixed(2)}
+              </p>
+            </span>
+          </div>
           <Cards
             number={state.number}
             expiry={state.expiry}

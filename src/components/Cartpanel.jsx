@@ -154,33 +154,37 @@ function Cartpanel() {
             <p className="text-xl font-semibold">Order summary</p>
             <span className="flex justify-between">
               <p>Subtotal</p>
-              <p className="">${subtotal}</p>
+              <p className="">${parseFloat(subtotal).toFixed(2)}</p>
             </span>
             <hr />
             {shippingIndia > 0 ? (
               <span className="flex justify-between text-sm">
                 <p>Shipping India to US</p>
-                <p className="">${shippingIndia}</p>
+                <p className="">${parseFloat(shippingIndia).toFixed(2)}</p>
               </span>
             ) : null}
 
             {shippingUs > 0 ? (
               <span className="flex justify-between text-sm">
                 <p>Shipping US to US</p>
-                <p className="">${shippingUs}</p>
+                <p className="">${parseFloat(shippingUs).toFixed(2)}</p>
               </span>
             ) : null}
 
             <hr />
             <span className="flex justify-between ">
               <p>Total Shipping</p>
-              <p className="">${shippingIndia + shippingUs}</p>
+              <p className="">
+                ${(parseInt(shippingIndia) + parseInt(shippingUs)).toFixed(2)}
+              </p>
             </span>
             <hr />
 
             <span className="flex justify-between text-xl font-semibold">
               <p>Total</p>
-              <p className="">${subtotal + shippingIndia + shippingUs}</p>
+              <p className="">
+                ${parseFloat(subtotal + shippingIndia + shippingUs).toFixed(2)}
+              </p>
             </span>
             <Button
               color="secondary"
