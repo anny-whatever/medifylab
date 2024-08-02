@@ -13,6 +13,7 @@ import Ordersmanage from "../components/Ordersmanage";
 import Acceptedordersmanage from "../components/Acceptedordersmanage";
 import Deliveredordersmanage from "../components/Deliveredordersmanage";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
+import AttendedPhonemanage from "../components/AttendedPhonemanage";
 function Admin() {
   const { userInfo, isLoggedIn } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +73,13 @@ function Admin() {
               <Card className="mx-10 ">
                 <CardBody>
                   <Phonemanage />
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab key="Attended Calls" title="Attended Calls">
+              <Card className="mx-10 ">
+                <CardBody>
+                  <AttendedPhonemanage />
                 </CardBody>
               </Card>
             </Tab>
