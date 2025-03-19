@@ -1,6 +1,7 @@
-import React from "react";
-import { useContext, useEffect, useState } from "react";
-import { Button } from "@nextui-org/react";
+// src/components/Cartcard.jsx
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Badge } from "@nextui-org/react";
+import { motion } from "framer-motion";
 
 import { db } from "../utils/config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
@@ -8,135 +9,168 @@ import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { DataContext } from "../utils/dataContext";
 import { AuthContext } from "../utils/authContext";
 import { Toaster, toast } from "sonner";
-function Cartpanel({ cartpid, pid, qty, route, pack, price }) {
+import { Link } from "react-router-dom";
+
+function Cartcard({ cartpid, pid, qty, route, pack, price }) {
   const { products } = useContext(DataContext);
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
   const [productDetails, setProductDetails] = useState([]);
   const [localQty, setLocalQty] = useState();
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [isIncrementing, setIsIncrementing] = useState(false);
+  const [isDecrementing, setIsDecrementing] = useState(false);
 
   useEffect(() => {
     const productDetails = products?.productsArray?.filter((product) => {
       return product.uuid === pid;
     });
     setProductDetails(productDetails?.[0]);
-    console.log("sfihsdiuf");
-  }, [products]);
+  }, [products, pid]);
 
   const incrementQtyLocal = () => {
-    let array = JSON.parse(localStorage.getItem("cart")) || [];
+    setIsIncrementing(true);
+    setTimeout(() => {
+      let array = JSON.parse(localStorage.getItem("cart")) || [];
+      const index = array.findIndex((obj) => obj.cartpid === cartpid);
 
-    // Find the index of the object to update
-    const index = array.findIndex((obj) => obj.cartpid === cartpid);
-    console.log(index);
-    if (index !== -1) {
-      // Update the key in the found object
-      array[index]["qty"] = array[index]["qty"] + 1;
+      if (index !== -1) {
+        array[index]["qty"] = array[index]["qty"] + 1;
+        setLocalQty(array[index]["qty"]);
+        localStorage.setItem("cart", JSON.stringify(array));
+        toast.success("Item quantity increased");
+        window.location.reload();
+        return true;
+      }
 
-      // Save the updated array back to local storage
-      setLocalQty(array[index]["qty"]);
-      localStorage.setItem("cart", JSON.stringify(array));
-      toast.success("Item Quantity Increased successfully");
       window.location.reload();
-      return true; // Update successful
-    }
-
-    window.location.reload();
+      setIsIncrementing(false);
+    }, 400);
   };
 
   const decrementQtyLocal = () => {
-    let array = JSON.parse(localStorage.getItem("cart")) || [];
+    setIsDecrementing(true);
+    setTimeout(() => {
+      let array = JSON.parse(localStorage.getItem("cart")) || [];
+      const index = array.findIndex((obj) => obj.cartpid === cartpid);
 
-    // Find the index of the object to update
-    const index = array.findIndex((obj) => obj.cartpid === cartpid);
-    console.log(index);
-    if (index !== -1) {
-      // Update the key in the found object
-      array[index]["qty"] = array[index]["qty"] - 1;
+      if (index !== -1) {
+        array[index]["qty"] = array[index]["qty"] - 1;
+        setLocalQty(array[index]["qty"]);
+        localStorage.setItem("cart", JSON.stringify(array));
+        toast.success("Item quantity decreased");
+        window.location.reload();
+        return true;
+      }
 
-      // Save the updated array back to local storage
-      setLocalQty(array[index]["qty"]);
-      localStorage.setItem("cart", JSON.stringify(array));
-      toast.success("Item Quantity Decreased successfully");
       window.location.reload();
-      return true; // Update successful
-    }
-
-    window.location.reload();
+      setIsDecrementing(false);
+    }, 400);
   };
 
   const removeLocal = () => {
-    let array = JSON.parse(localStorage.getItem("cart")) || [];
-    const index = array.findIndex((obj) => obj.cartpid === cartpid);
-    let updatedCart = [...array.slice(0, index), ...array.slice(index + 1)];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    toast.success("Item Removed successfully");
-    window.location.reload();
+    setIsRemoving(true);
+    setTimeout(() => {
+      let array = JSON.parse(localStorage.getItem("cart")) || [];
+      const index = array.findIndex((obj) => obj.cartpid === cartpid);
+      let updatedCart = [...array.slice(0, index), ...array.slice(index + 1)];
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      toast.success("Item removed from cart");
+      window.location.reload();
+    }, 400);
   };
 
   const handleRemove = async () => {
-    await updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayRemove({
-        cartpid: cartpid,
-        uuid: pid,
-        qty: qty,
-        route: route,
-        pack: pack,
-        price: price,
-      }),
-    }).catch((error) => {
-      console.log(error);
-    });
-    toast.success("Item removed successfully");
+    setIsRemoving(true);
+    setTimeout(async () => {
+      await updateDoc(doc(db, "users", userInfo?.uid), {
+        cart: arrayRemove({
+          cartpid: cartpid,
+          uuid: pid,
+          qty: qty,
+          route: route,
+          pack: pack,
+          price: price,
+        }),
+      }).catch((error) => {
+        console.log(error);
+        toast.error("Error removing item");
+        setIsRemoving(false);
+      });
+      toast.success("Item removed from cart");
+      setIsRemoving(false);
+    }, 400);
   };
 
   const handleIncrementQty = async () => {
-    updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayUnion({
-        cartpid: cartpid,
-        uuid: pid,
-        qty: qty + 1,
-        route: route,
-        pack: pack,
-        price: price,
-      }),
-    });
-    updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayRemove({
-        cartpid: cartpid,
-        uuid: pid,
-        qty: qty,
-        route: route,
-        pack: pack,
-        price: price,
-      }),
-    });
-    toast.success("Item Quantity Increased successfully");
-    // window.location.reload();
+    setIsIncrementing(true);
+    setTimeout(async () => {
+      try {
+        await updateDoc(doc(db, "users", userInfo?.uid), {
+          cart: arrayUnion({
+            cartpid: cartpid,
+            uuid: pid,
+            qty: qty + 1,
+            route: route,
+            pack: pack,
+            price: price,
+          }),
+        });
+
+        await updateDoc(doc(db, "users", userInfo?.uid), {
+          cart: arrayRemove({
+            cartpid: cartpid,
+            uuid: pid,
+            qty: qty,
+            route: route,
+            pack: pack,
+            price: price,
+          }),
+        });
+
+        toast.success("Item quantity increased");
+        setIsIncrementing(false);
+      } catch (error) {
+        toast.error("Error updating quantity");
+        setIsIncrementing(false);
+      }
+    }, 400);
   };
 
   const handleDecrementQty = async () => {
-    updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayUnion({
-        cartpid: cartpid,
-        uuid: pid,
-        qty: qty - 1,
-        route: route,
-        pack: pack,
-        price: price,
-      }),
-    });
-    updateDoc(doc(db, "users", userInfo?.uid), {
-      cart: arrayRemove({
-        cartpid: cartpid,
-        uuid: pid,
-        qty: qty,
-        route: route,
-        pack: pack,
-        price: price,
-      }),
-    });
-    toast.success("Item Quantity Decreased successfully");
-    // window.location.reload();
+    setIsDecrementing(true);
+    setTimeout(async () => {
+      try {
+        if (qty > 1) {
+          await updateDoc(doc(db, "users", userInfo?.uid), {
+            cart: arrayUnion({
+              cartpid: cartpid,
+              uuid: pid,
+              qty: qty - 1,
+              route: route,
+              pack: pack,
+              price: price,
+            }),
+          });
+
+          await updateDoc(doc(db, "users", userInfo?.uid), {
+            cart: arrayRemove({
+              cartpid: cartpid,
+              uuid: pid,
+              qty: qty,
+              route: route,
+              pack: pack,
+              price: price,
+            }),
+          });
+
+          toast.success("Item quantity decreased");
+        }
+        setIsDecrementing(false);
+      } catch (error) {
+        toast.error("Error updating quantity");
+        setIsDecrementing(false);
+      }
+    }, 400);
   };
 
   const isBtnDisabled = () => {
@@ -146,125 +180,192 @@ function Cartpanel({ cartpid, pid, qty, route, pack, price }) {
       return qty <= 1 ? true : false;
     }
   };
+
+  if (!productDetails) return null;
+
   return (
     <>
-      <Toaster richColors />
-      <div className="flex flex-col w-11/12 mx-auto mb-3 duration-200 ease-in-out md:flex-col hover:shadow-lg rounded-xl">
-        <div className="flex flex-col w-full overflow-hidden border-gray-200 sm:flex-row cartCard h-fit border-1 rounded-xl">
-          <div className="hidden w-full sm:block min-h-44 sm:max-w-52 sm:min-w-44 bg-slate-500 prodImg">
-            <img
-              src={productDetails?.mainImage}
-              alt={productDetails?.name}
-              className="object-cover"
-            />
-          </div>
-          <div className="flex justify-between w-full p-3 bg-gradient-to-t from-[#ffffff] to-[#ffffff88] sm:bg-white">
-            <div className="flex flex-col justify-between ml-2 prodInfo">
-              <div className="div">
-                <div className="mt-3 text-xl title">{productDetails?.name}</div>
-                <div className="mt-2 quantity">Pack size: {pack} Pills</div>
-                <div className="mt-2 quantity">
+      <Toaster richColors position="top-right" />
+      <motion.div
+        className="mb-4 overflow-hidden transition-shadow duration-300 bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        layout
+        transition={{ type: "spring", damping: 25, stiffness: 500 }}
+      >
+        <div className="flex flex-col sm:flex-row">
+          <Link to={`/product/${pid}`} className="relative block h-40 sm:w-40">
+            <motion.div
+              className="relative w-full h-full"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <img
+                src={productDetails?.mainImage}
+                alt={productDetails?.name}
+                className="object-cover w-full h-full"
+              />
+              <Badge
+                content={`${route === "intous" ? "IN→US" : "US→US"}`}
+                color={route === "intous" ? "warning" : "primary"}
+                placement="top-right"
+                className="absolute top-2 right-2"
+              />
+            </motion.div>
+          </Link>
+
+          <div className="flex flex-col justify-between flex-1 p-4 sm:flex-row">
+            <div className="mr-4">
+              <Link to={`/product/${pid}`}>
+                <h3 className="text-lg font-semibold text-gray-800 transition-colors hover:text-primary">
+                  {productDetails?.name}
+                </h3>
+              </Link>
+              <div className="flex items-center mt-1 text-sm text-gray-600">
+                <span className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                    />
+                  </svg>
+                  Pack: {pack} Pills
+                </span>
+                <span className="mx-2">•</span>
+                <span>
                   Route: {route === "intous" ? "India to US" : "US to US"}
-                </div>
+                </span>
               </div>
-              <Button
-                className="mb-3 delete w-fit"
-                color="danger"
-                variant="flat"
-                onClick={isLoggedIn ? handleRemove : removeLocal}
-              >
-                Remove
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                  />
-                </svg>
-              </Button>
-            </div>
-            <div className="flex flex-col items-end justify-between mt-3 mr-3 md:items-center jus prodInfo">
-              <div className="flex flex-col price">
-                <span className="mr-1 font-displaybold ">
-                  <span className="mr-2 text-xl text-red-600 font-displaylight">
-                    -
+
+              <div className="mt-2">
+                <div className="flex items-center">
+                  <span className="text-xl font-semibold text-primary">
+                    ${productDetails?.discount}
+                  </span>
+                  <span className="ml-1 text-sm text-gray-700">/pill</span>
+
+                  <span className="ml-2 text-sm text-gray-500 line-through">
+                    ${productDetails?.price}
+                  </span>
+
+                  <span className="ml-2 text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
                     {(
                       ((productDetails?.price - productDetails?.discount) /
                         productDetails?.price) *
                       100
                     ).toFixed(0)}
-                    %
+                    % off
                   </span>
-                  <span className="text-2xl font-displaybold text-primary">
-                    ${productDetails?.discount}
-                  </span>
-                  <span className="text-md text-primary">/pill</span>
-                </span>
-                <span className="font-displaylight">
-                  MRP:{" "}
-                  <span className="line-through ">
-                    ${productDetails?.price}/pill
-                  </span>
-                </span>
+                </div>
+
+                <div className="mt-1 text-sm text-gray-500">
+                  Subtotal: $
+                  {(productDetails?.discount * qty * pack).toFixed(2)}
+                </div>
               </div>
-              <div className="flex flex-row items-center justify-center mb-3 sm:flex-col-reverse md:flex-row counter">
+
+              <div className="mt-4">
                 <Button
-                  isDisabled={isBtnDisabled()}
+                  className="text-sm text-danger"
+                  variant="light"
+                  onClick={isLoggedIn ? handleRemove : removeLocal}
+                  isLoading={isRemoving}
+                  isDisabled={isRemoving || isIncrementing || isDecrementing}
+                  startContent={
+                    !isRemoving && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    )
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center mt-4 sm:mt-0">
+              <div className="flex bg-gray-100 rounded-lg">
+                <Button
+                  isIconOnly
+                  isDisabled={isBtnDisabled() || isDecrementing}
                   size="sm"
-                  className="bg-transparent hover:bg-red-500 hover:bg-opacity-30"
+                  variant="flat"
+                  className="rounded-r-none"
+                  isLoading={isDecrementing}
                   onClick={isLoggedIn ? handleDecrementQty : decrementQtyLocal}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
+                    className="w-4 h-4"
                     fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-plus"
                   >
-                    <path d="M5 12h14" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 12H4"
+                    />
                   </svg>
                 </Button>
-                <span className="mx-3">{localQty ? localQty : qty}</span>
+
+                <div className="flex items-center justify-center w-12 font-medium text-gray-900">
+                  {localQty || qty}
+                </div>
+
                 <Button
+                  isIconOnly
                   size="sm"
-                  className="bg-transparent hover:bg-green-500 hover:bg-opacity-30"
+                  variant="flat"
+                  className="rounded-l-none"
+                  isLoading={isIncrementing}
+                  isDisabled={isIncrementing}
                   onClick={isLoggedIn ? handleIncrementQty : incrementQtyLocal}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
+                    className="w-4 h-4"
                     fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-plus"
                   >
-                    <path d="M5 12h14" />
-                    <path d="M12 5v14" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
                 </Button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
 
-export default Cartpanel;
+export default Cartcard;

@@ -1,14 +1,22 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { Button, user } from "@nextui-org/react";
-
+// src/components/Cartpanel.jsx
+import React, { useEffect, useState, useContext } from "react";
+import {
+  Button,
+  Progress,
+  Card,
+  CardBody,
+  CardHeader,
+  CardFooter,
+  Divider,
+} from "@nextui-org/react";
+import { motion, AnimatePresence } from "framer-motion";
 import Cartcard from "./Cartcard";
 import { DataContext } from "../utils/dataContext";
 import { AuthContext } from "../utils/authContext.js";
-import { useContext } from "react";
+import { Link } from "react-router-dom";
 
 import { v4 as uuidv4 } from "uuid";
-import { Navigate } from "react-router-dom";
+
 function Cartpanel() {
   const { userInfo, isLoggedIn, userData } = useContext(AuthContext);
   const { products } = useContext(DataContext);
@@ -16,6 +24,7 @@ function Cartpanel() {
   const [subtotal, setSubtotal] = useState(0);
   const [shippingIndia, setShippingIndia] = useState(0);
   const [shippingUs, setShippingUs] = useState(0);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -40,8 +49,6 @@ function Cartpanel() {
           } else if (obj.route === "ustous") {
             hasUstous = true;
           }
-
-          // setSubtotal(obj.qty * productDetails?.discount + Subtotal);
         }
       }
 
@@ -53,6 +60,7 @@ function Cartpanel() {
         setShippingUs(70);
       }
     }
+
     if (!userData?.cart) {
       checkRoutes(cart);
     } else {
@@ -64,8 +72,8 @@ function Cartpanel() {
         const itemTotal = item.qty * item.price * item.pack;
         return total + itemTotal;
       }, 0);
-      console.log(subtotal);
-      setSubtotal(subtotal);
+
+      setSubtotal(subtotal || 0);
     }
 
     if (!userData?.cart) {
@@ -77,132 +85,335 @@ function Cartpanel() {
 
   const handlePlaceOrder = async () => {
     if (cart?.length > 0) {
-      const order = {
-        orderId: uuidv4(),
-
-        products: cart,
-        total: subtotal,
-        shippingIndia: shippingIndia,
-        shippingUs: shippingUs,
-      };
-      window.location.href =
-        "/checkout?orderId=" +
-        order.orderId +
-        "&products=" +
-        JSON.stringify(order.products) +
-        "&total=" +
-        order.total +
-        "&shippingIndia=" +
-        order.shippingIndia +
-        "&shippingUs=" +
-        order.shippingUs +
-        "&checkOutFrom=" +
-        "cart";
+      setIsCheckingOut(true);
+      setTimeout(() => {
+        const order = {
+          orderId: uuidv4(),
+          products: cart,
+          total: subtotal,
+          shippingIndia: shippingIndia,
+          shippingUs: shippingUs,
+        };
+        window.location.href =
+          "/checkout?orderId=" +
+          order.orderId +
+          "&products=" +
+          JSON.stringify(order.products) +
+          "&total=" +
+          order.total +
+          "&shippingIndia=" +
+          order.shippingIndia +
+          "&shippingUs=" +
+          order.shippingUs +
+          "&checkOutFrom=" +
+          "cart";
+      }, 800);
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cartItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: -20,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  const isCartEmpty =
+    (isLoggedIn && (!userData?.cart || userData?.cart?.length === 0)) ||
+    (!isLoggedIn && (!cart || cart?.length === 0));
+
   return (
-    <>
-      <div className="w-3/5 pl-3 mx-auto mt-5 mb-10 text-center lg:mb-6">
-        <h2 className="text-3xl font-bold md:text-4xl md:leading-tight text-primary">
-          Shopping cart
-        </h2>
-        {userData?.cart?.length === 0 ? (
-          <p className="mt-2 text-sm text-gray-500">Your cart is empty</p>
-        ) : (
-          <p className="mt-2 text-sm text-gray-500">
-            Your cart contains{" "}
-            {isLoggedIn ? userData?.cart?.length : cart?.length} item(s)
-          </p>
-        )}
-
-        {/* <hr className="mt-3 border-gray-200" /> */}
-      </div>
-
-      <div className="flex flex-col justify-center w-full mb-10 lg:flex-row">
-        <div className="w-full lg:w-3/5">
-          {isLoggedIn == true
-            ? userData?.cart
-                ?.sort((a, b) => a.pack - b.pack)
-                ?.map((item, index) => (
-                  <Cartcard
-                    cartpid={item.cartpid}
-                    key={index}
-                    pid={item.uuid}
-                    qty={item.qty}
-                    price={item.price}
-                    route={item.route}
-                    pack={item.pack}
-                  />
-                ))
-            : cart
-                ?.sort((a, b) => a.pack - b.pack)
-                ?.map((item, index) => (
-                  <Cartcard
-                    cartpid={item.cartpid}
-                    key={index}
-                    pid={item.uuid}
-                    price={item.price}
-                    qty={item.qty}
-                    route={item.route}
-                    pack={item.pack}
-                  />
-                ))}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="w-full max-w-6xl px-4 py-10 mx-auto">
+        <div className="mb-8 text-center">
+          <motion.h1
+            className="mb-2 text-3xl font-bold text-primary"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Your Shopping Cart
+          </motion.h1>
+          <motion.p
+            className="text-gray-600"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {isCartEmpty
+              ? "Your cart is empty"
+              : `Your cart contains ${
+                  isLoggedIn ? userData?.cart?.length : cart?.length
+                } item(s)`}
+          </motion.p>
         </div>
-        {cart?.length > 0 ? (
-          <div className="flex flex-col w-11/12 p-10 mx-auto lg:mr-5 lg:mx-0 lg:w-2/5 bg-opacity-30 h-fit rounded-xl md:sticky top-10 bg-accent xl:w-1/4 gap-y-5">
-            <p className="text-xl font-semibold">Order summary</p>
-            <span className="flex justify-between">
-              <p>Subtotal</p>
-              <p className="">${parseFloat(subtotal).toFixed(2)}</p>
-            </span>
-            <hr />
-            {shippingIndia > 0 ? (
-              <span className="flex items-center justify-between text-sm">
-                <p>
-                  Shipping India to US
-                  <p className="text-xs">15-21 working days.</p>
-                </p>
-                <p className="">${parseFloat(shippingIndia).toFixed(2)}</p>
-              </span>
-            ) : null}
 
-            {shippingUs > 0 ? (
-              <span className="flex items-center justify-between text-sm">
-                <p>
-                  Shipping US to US
-                  <p className="text-xs">7-10 Working days.</p>
-                </p>
-                <p className="">${parseFloat(shippingUs).toFixed(2)}</p>
-              </span>
-            ) : null}
-
-            <hr />
-            <span className="flex justify-between ">
-              <p>Total Shipping</p>
-              <p className="">
-                ${(parseInt(shippingIndia) + parseInt(shippingUs)).toFixed(2)}
-              </p>
-            </span>
-            <hr />
-
-            <span className="flex justify-between text-xl font-semibold">
-              <p>Total</p>
-              <p className="">
-                ${parseFloat(subtotal + shippingIndia + shippingUs).toFixed(2)}
-              </p>
-            </span>
-            <Button
-              color="secondary"
-              onClick={handlePlaceOrder}
-              className="w-full mt-5"
+        {isCartEmpty ? (
+          <motion.div
+            className="py-16 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className="w-24 h-24 mx-auto mb-6 text-gray-300">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+            </div>
+            <h2 className="mb-4 text-xl font-medium text-gray-700">
+              Your shopping cart is empty
+            </h2>
+            <p className="max-w-md mx-auto mb-8 text-gray-500">
+              Looks like you havent added any products to your cart yet.
+            </p>
+            <Link to="/shop">
+              <Button
+                color="primary"
+                size="lg"
+                className="font-medium"
+                startContent={
+                  <svg
+                    className="w-5 h-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                }
+              >
+                Continue Shopping
+              </Button>
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="flex flex-col gap-8 lg:flex-row">
+            <motion.div
+              className="lg:w-2/3"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              Place order
-            </Button>
+              <AnimatePresence>
+                {isLoggedIn
+                  ? userData?.cart
+                      ?.sort((a, b) => a.pack - b.pack)
+                      ?.map((item, index) => (
+                        <motion.div
+                          key={item.cartpid}
+                          variants={cartItemVariants}
+                          exit="exit"
+                          layout
+                        >
+                          <Cartcard
+                            cartpid={item.cartpid}
+                            pid={item.uuid}
+                            qty={item.qty}
+                            price={item.price}
+                            route={item.route}
+                            pack={item.pack}
+                          />
+                        </motion.div>
+                      ))
+                  : cart
+                      ?.sort((a, b) => a.pack - b.pack)
+                      ?.map((item, index) => (
+                        <motion.div
+                          key={item.cartpid}
+                          variants={cartItemVariants}
+                          exit="exit"
+                          layout
+                        >
+                          <Cartcard
+                            cartpid={item.cartpid}
+                            pid={item.uuid}
+                            price={item.price}
+                            qty={item.qty}
+                            route={item.route}
+                            pack={item.pack}
+                          />
+                        </motion.div>
+                      ))}
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.div
+              className="lg:w-1/3"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="sticky top-20">
+                <CardHeader className="flex-col items-start px-6 pt-4 pb-0">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    Order Summary
+                  </h2>
+                </CardHeader>
+                <CardBody className="py-4">
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-700">Subtotal</span>
+                    <span className="font-medium">
+                      ${parseFloat(subtotal).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <Divider className="my-2" />
+
+                  {shippingIndia > 0 ? (
+                    <div className="flex items-start justify-between py-2">
+                      <div>
+                        <p className="text-gray-700">Shipping India to US</p>
+                        <p className="text-xs text-gray-500">
+                          15-21 working days
+                        </p>
+                      </div>
+                      <span className="font-medium">
+                        ${parseFloat(shippingIndia).toFixed(2)}
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {shippingUs > 0 ? (
+                    <div className="flex items-start justify-between py-2">
+                      <div>
+                        <p className="text-gray-700">Shipping US to US</p>
+                        <p className="text-xs text-gray-500">
+                          7-10 working days
+                        </p>
+                      </div>
+                      <span className="font-medium">
+                        ${parseFloat(shippingUs).toFixed(2)}
+                      </span>
+                    </div>
+                  ) : null}
+
+                  <Divider className="my-2" />
+
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-700">Total Shipping</span>
+                    <span className="font-medium">
+                      ${(shippingIndia + shippingUs).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <Divider className="my-3" />
+
+                  <div className="flex justify-between py-2">
+                    <span className="text-lg font-semibold">Total</span>
+                    <span className="text-lg font-bold text-primary">
+                      $
+                      {parseFloat(
+                        subtotal + shippingIndia + shippingUs
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                </CardBody>
+                <CardFooter>
+                  <Button
+                    color="secondary"
+                    className="w-full py-6 font-medium text-md"
+                    onClick={handlePlaceOrder}
+                    isLoading={isCheckingOut}
+                    disabled={isCheckingOut}
+                    startContent={
+                      !isCheckingOut && (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                      )
+                    }
+                  >
+                    Checkout
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              <div className="p-4 mt-4 border rounded-lg bg-primary/5 border-primary/20">
+                <div className="flex items-start gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-primary mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div>
+                    <p className="mb-1 text-sm text-gray-700">
+                      Need help with your order?
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      Contact our customer support at{" "}
+                      <span className="font-medium text-primary">
+                        support@medifylab.com
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
-        ) : null}
+        )}
       </div>
-    </>
+    </motion.div>
   );
 }
 
