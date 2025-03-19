@@ -115,7 +115,7 @@ function ProductCard({ product, layout = "shop" }) {
         {/* View Details Button */}
         <Link to={`/product/${uuid}`}>
           <Button
-            className="w-full bg-secondary text-white text-xs py-1.5"
+            className="w-full  text-white text-xs py-1.5"
             radius="md"
             size="sm"
           >
