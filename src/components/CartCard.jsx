@@ -1,7 +1,7 @@
 // src/components/Cartcard.jsx
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Badge } from "@nextui-org/react";
-import { motion } from "framer-motion";
+import { Button, Badge, Chip } from "@nextui-org/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { db } from "../utils/config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
@@ -19,6 +19,7 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isIncrementing, setIsIncrementing] = useState(false);
   const [isDecrementing, setIsDecrementing] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const productDetails = products?.productsArray?.filter((product) => {
@@ -183,21 +184,39 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
 
   if (!productDetails) return null;
 
+  // Calculate discount percentage
+  const discountPercentage =
+    productDetails?.price && productDetails?.discount
+      ? Math.round(
+          ((productDetails.price - productDetails.discount) /
+            productDetails.price) *
+            100
+        )
+      : 0;
+
+  const subtotal = (
+    productDetails?.discount *
+    (localQty || qty) *
+    pack
+  ).toFixed(2);
+
   return (
     <>
       <Toaster richColors position="top-right" />
       <motion.div
-        className="mb-4 overflow-hidden transition-shadow duration-300 bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md"
+        className="mb-4 overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl hover:shadow-md group"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -100 }}
         layout
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
       >
         <div className="flex flex-col sm:flex-row">
           <Link to={`/product/${pid}`} className="relative block h-40 sm:w-40">
             <motion.div
-              className="relative w-full h-full"
+              className="relative w-full h-full overflow-hidden"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
@@ -212,17 +231,30 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                 placement="top-right"
                 className="absolute top-2 right-2"
               />
+
+              {discountPercentage > 0 && (
+                <div className="absolute top-2 left-2">
+                  <Chip
+                    color="danger"
+                    size="sm"
+                    variant="solid"
+                    className="text-xs font-semibold"
+                  >
+                    {discountPercentage}% OFF
+                  </Chip>
+                </div>
+              )}
             </motion.div>
           </Link>
 
           <div className="flex flex-col justify-between flex-1 p-4 sm:flex-row">
             <div className="mr-4">
               <Link to={`/product/${pid}`}>
-                <h3 className="text-lg font-semibold text-gray-800 transition-colors hover:text-primary">
+                <h3 className="text-lg font-semibold text-gray-800 transition-colors hover:text-primary group-hover:text-primary">
                   {productDetails?.name}
                 </h3>
               </Link>
-              <div className="flex items-center mt-1 text-sm text-gray-600">
+              <div className="flex flex-col mt-1 text-sm text-gray-600 sm:flex-row sm:items-center">
                 <span className="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -238,11 +270,19 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                       d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                     />
                   </svg>
-                  Pack: {pack} Pills
+                  <span className="font-medium">{pack} Pills</span>
                 </span>
-                <span className="mx-2">•</span>
-                <span>
+                <span className="hidden mx-2 sm:inline">•</span>
+                <span className="mt-1 sm:mt-0">
                   Route: {route === "intous" ? "India to US" : "US to US"}
+                  <Badge
+                    size="sm"
+                    color={route === "intous" ? "warning" : "primary"}
+                    variant="flat"
+                    className="ml-1"
+                  >
+                    {route === "intous" ? "15-21 days" : "7-10 days"}
+                  </Badge>
                 </span>
               </div>
 
@@ -256,24 +296,26 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                   <span className="ml-2 text-sm text-gray-500 line-through">
                     ${productDetails?.price}
                   </span>
-
-                  <span className="ml-2 text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full">
-                    {(
-                      ((productDetails?.price - productDetails?.discount) /
-                        productDetails?.price) *
-                      100
-                    ).toFixed(0)}
-                    % off
-                  </span>
                 </div>
 
                 <div className="mt-1 text-sm text-gray-500">
-                  Subtotal: $
-                  {(productDetails?.discount * qty * pack).toFixed(2)}
+                  Subtotal:{" "}
+                  <span className="font-semibold text-primary">
+                    ${subtotal}
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-4">
+              <motion.div
+                className="flex mt-4"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{
+                  opacity: isHovered ? 1 : 0,
+                  height: isHovered ? "auto" : 0,
+                  marginTop: isHovered ? 16 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              >
                 <Button
                   className="text-sm text-danger"
                   variant="light"
@@ -301,17 +343,17 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                 >
                   Remove
                 </Button>
-              </div>
+              </motion.div>
             </div>
 
             <div className="flex items-center mt-4 sm:mt-0">
-              <div className="flex bg-gray-100 rounded-lg">
+              <div className="flex overflow-hidden border border-gray-200 rounded-lg shadow-sm">
                 <Button
                   isIconOnly
                   isDisabled={isBtnDisabled() || isDecrementing}
                   size="sm"
                   variant="flat"
-                  className="rounded-r-none"
+                  className="bg-white rounded-r-none hover:bg-gray-100"
                   isLoading={isDecrementing}
                   onClick={isLoggedIn ? handleDecrementQty : decrementQtyLocal}
                 >
@@ -331,7 +373,7 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                   </svg>
                 </Button>
 
-                <div className="flex items-center justify-center w-12 font-medium text-gray-900">
+                <div className="flex items-center justify-center w-12 font-medium text-gray-900 bg-white">
                   {localQty || qty}
                 </div>
 
@@ -339,7 +381,7 @@ function Cartcard({ cartpid, pid, qty, route, pack, price }) {
                   isIconOnly
                   size="sm"
                   variant="flat"
-                  className="rounded-l-none"
+                  className="bg-white rounded-l-none hover:bg-gray-100"
                   isLoading={isIncrementing}
                   isDisabled={isIncrementing}
                   onClick={isLoggedIn ? handleIncrementQty : incrementQtyLocal}

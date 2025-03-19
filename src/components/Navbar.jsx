@@ -325,7 +325,7 @@ function Navbar() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute left-0 z-30 w-full pb-5 overflow-hidden lg:p-0 bg-zinc-800 lg:bg-transparent lg:relative lg:flex lg:h-auto basis-full grow lg:block"
+                className="absolute left-0 z-30 w-full pb-5 overflow-hidden lg:p-0 bg-zinc-800 lg:bg-transparent lg:relative lg:flex lg:h-auto basis-full grow"
               >
                 <div
                   id="preline__collapse"

@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { Button } from "@nextui-org/react";
 import { motion } from "framer-motion";
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import CarouselComponent from "./CarouselComponent.jsx";
 import whatsapp from "../assets/img/whatsapp.svg";
 
@@ -34,13 +34,13 @@ function Hero() {
       toast.error("Please enter a phone number");
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       const docRef = doc(db, "visitorInfo", "tel");
       // Remove the + from the phone number if it exists
-      const phoneNumber = value.startsWith('+') ? value.substring(1) : value;
-      
+      const phoneNumber = value.startsWith("+") ? value.substring(1) : value;
+
       await updateDoc(docRef, {
         pendingNumbers: arrayUnion(phoneNumber),
       });
@@ -71,7 +71,6 @@ function Hero() {
 
   return (
     <>
-      <Toaster richColors position="top-center" />
       <Modal
         backdrop="blur"
         isOpen={isOpen}
@@ -128,7 +127,7 @@ function Hero() {
                     whileHover={{ scale: 1.02 }}
                     className="p-3 mb-2 transition-all rounded-lg shadow-sm bg-gray-50 hover:shadow-md"
                   >
-                    
+                    <a
                       href="tel:+16092371558"
                       className="flex items-center gap-2 text-left text-gray-800"
                     >
@@ -153,7 +152,7 @@ function Hero() {
                     whileHover={{ scale: 1.02 }}
                     className="p-3 transition-all rounded-lg shadow-sm bg-gray-50 hover:shadow-md"
                   >
-                    
+                    <a
                       href="tel:+12549786592"
                       className="flex items-center gap-2 text-left text-gray-800"
                     >
