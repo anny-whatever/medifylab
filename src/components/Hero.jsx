@@ -318,7 +318,7 @@ function Hero() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <div className="p-1 bg-gradient-to-tr from-primary to-secondary rounded-2xl">
+              <div className="p-1">
                 <div className="p-2 bg-white rounded-xl">
                   <CarouselComponent />
                 </div>

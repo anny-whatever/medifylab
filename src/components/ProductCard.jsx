@@ -1,6 +1,6 @@
 // src/components/ProductCard.jsx
 import React from "react";
-import { Button, Chip } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -25,19 +25,15 @@ function ProductCard({ product, layout = "shop" }) {
   const getCategoryInfo = () => {
     switch (category) {
       case "ed":
-        return {
-          label: "Erectile Dysfunction",
-          color: "#FF8A65",
-          textColor: "white",
-        };
+        return { label: "Erectile Dysfunction", shortLabel: "E.D." };
       case "control":
-        return { label: "Painkillers", color: "#FF5252", textColor: "white" };
+        return { label: "Painkillers", shortLabel: "Painkillers" };
       case "performance":
-        return { label: "Performance", color: "#66BB6A", textColor: "white" };
+        return { label: "Performance", shortLabel: "Performance" };
       case "other":
-        return { label: "Other", color: "#BDBDBD", textColor: "black" };
+        return { label: "Other", shortLabel: "Other" };
       default:
-        return { label: category, color: "#BDBDBD", textColor: "black" };
+        return { label: category, shortLabel: category };
     }
   };
 
@@ -51,94 +47,83 @@ function ProductCard({ product, layout = "shop" }) {
   };
 
   return (
-    <motion.div
-      className="flex flex-col overflow-hidden transition-all duration-300 bg-white border border-gray-100 rounded-lg shadow-sm"
-      whileHover={{
-        y: -5,
-        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-        borderColor: "rgba(229, 231, 235, 0.5)",
-      }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      {/* Product Image Section */}
+    <div className="h-full overflow-hidden bg-white border border-gray-200 rounded-lg">
       <div className="relative">
-        <motion.img
-          className="w-full h-[180px] object-contain p-2"
-          src={mainImage}
-          alt={name}
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.3 }}
-        />
-
         {/* Category Badge */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute z-10 top-2 left-2">
           <div
             className="px-2 py-1 text-xs font-medium rounded-full"
             style={{
-              backgroundColor: categoryInfo.color,
-              color: categoryInfo.textColor,
+              backgroundColor:
+                category === "ed"
+                  ? "#FF8A65"
+                  : category === "control"
+                  ? "#FF5252"
+                  : category === "performance"
+                  ? "#66BB6A"
+                  : "#BDBDBD",
+              color: "white",
             }}
           >
-            {categoryInfo.label}
+            <span className="hidden sm:inline">{categoryInfo.label}</span>
+            <span className="sm:hidden">{categoryInfo.shortLabel}</span>
           </div>
         </div>
 
         {/* Discount Badge */}
         {discountPercentage > 0 && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute z-10 top-2 right-2">
             <div className="px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
               {discountPercentage}% OFF
             </div>
           </div>
         )}
+
+        {/* Product Image */}
+        <img
+          src={mainImage}
+          alt={name}
+          className="object-contain w-full h-32 p-2 sm:h-40"
+        />
       </div>
 
-      {/* Product Info Section */}
-      <div className="flex flex-col flex-grow p-3">
-        <h3 className="font-semibold text-gray-800 line-clamp-2 min-h-[48px]">
+      <div className="p-3">
+        {/* Product Name */}
+        <h3 className="h-8 mb-1 overflow-hidden text-sm font-semibold leading-tight text-gray-800">
           {name}
         </h3>
 
-        {layout === "shop" && (brand || generic) && (
-          <div className="flex items-center gap-1 mt-1 mb-2 text-xs text-gray-500">
+        {/* Brand & Generic */}
+        {(brand || generic) && (
+          <div className="flex items-center gap-1 mb-2 text-xs text-gray-500">
             {brand && <span>{brand}</span>}
             {brand && generic && <span>•</span>}
-            {generic && <span>{generic}</span>}
+            {generic && <span className="truncate">{generic}</span>}
           </div>
         )}
 
-        {layout === "shop" && description && (
-          <p className="mb-3 text-xs text-gray-600 line-clamp-2">
-            {truncateText(description, 100)}
-          </p>
-        )}
-
-        <div className="mt-auto">
-          {/* Price Display */}
-          <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-primary">${discount}</span>
-            <span className="ml-1 text-sm text-gray-600">/pill</span>
-          </div>
-
-          <div className="flex items-center mt-1">
-            <span className="text-xs text-gray-500">
-              MRP: <span className="line-through">${price}</span>
-            </span>
-          </div>
-
-          {/* Action Button */}
-          <Link to={`/product/${uuid}`} className="block mt-3">
-            <Button
-              className="w-full text-white bg-secondary hover:bg-secondary/90"
-              radius="md"
-              size="sm"
-            >
-              View Details
-            </Button>
-          </Link>
+        {/* Price */}
+        <div className="flex items-baseline">
+          <span className="text-xl font-bold text-primary">${discount}</span>
+          <span className="ml-1 text-xs text-gray-600">/pill</span>
         </div>
+
+        <div className="mb-3 text-xs text-gray-500">
+          MRP: <span className="line-through">${price}</span>
+        </div>
+
+        {/* View Details Button */}
+        <Link to={`/product/${uuid}`}>
+          <Button
+            className="w-full bg-secondary text-white text-xs py-1.5"
+            radius="md"
+            size="sm"
+          >
+            View Details
+          </Button>
+        </Link>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
