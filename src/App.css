@@ -40,3 +40,116 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Phone input custom styles - Add these to your index.css file */
+.custom-phone-input {
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.custom-phone-input .PhoneInputInput {
+  height: 48px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.custom-phone-input .PhoneInputCountry {
+  margin-right: 0.5rem;
+  padding-left: 0.75rem;
+}
+
+.phone-input-container {
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+/* Fix phone input on smaller screens */
+@media (max-width: 640px) {
+  .custom-phone-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .custom-phone-input .PhoneInputInput {
+    font-size: 0.875rem;
+    height: 42px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .PhoneInputCountryIcon {
+    width: 1.5rem;
+  }
+
+  .PhoneInputCountrySelectArrow {
+    margin-right: 0.25rem;
+  }
+}
+
+/* Ensure proper order on mobile layouts */
+@media (max-width: 1023px) {
+  .order-sm-1 {
+    order: 1 !important;
+  }
+
+  .order-sm-2 {
+    order: 2 !important;
+  }
+}
+
+/* Fix button sizing */
+@media (max-width: 1024px) {
+  .call-button {
+    width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    white-space: nowrap;
+  }
+}
+
+/* Fix for flex layouts on small screens */
+@media (max-width: 640px) {
+  .mobile-stack {
+    flex-direction: column;
+  }
+
+  .mobile-full-width {
+    width: 100%;
+  }
+
+  .mobile-padding-adjust {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Handle overflow on smaller screens */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Better spacing for payment icons */
+.payment-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.payment-icons img {
+  height: 2rem;
+  object-fit: contain;
+}
+
+/* Fix button overflow */
+.btn-no-overflow {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

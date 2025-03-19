@@ -12,6 +12,7 @@ export default function CarouselComponent() {
       loop: true,
       align: "start",
       slidesToScroll: 1,
+      containScroll: "trimSnaps",
     },
     [Autoplay({ delay: 4000 })]
   );
@@ -61,12 +62,16 @@ export default function CarouselComponent() {
                     {/* Category and Discount Labels */}
                     <div className="absolute z-10 top-2 left-2">
                       <div
-                        className="px-3 py-1 text-xs font-medium text-white rounded-full"
+                        className="px-2 py-1 text-xs font-medium text-white rounded-full"
                         style={{
                           backgroundColor: getCategoryColor(product.category),
                         }}
                       >
-                        Erectile Dysfunction
+                        {/* Shorter text for mobile */}
+                        <span className="hidden sm:inline">
+                          Erectile Dysfunction
+                        </span>
+                        <span className="inline sm:hidden">E.D.</span>
                       </div>
                     </div>
 
@@ -83,12 +88,12 @@ export default function CarouselComponent() {
                       <img
                         src={product.mainImage}
                         alt={product.name}
-                        className="object-contain w-32 h-32"
+                        className="object-contain w-24 h-24 sm:w-32 sm:h-32"
                       />
                     </div>
 
                     {/* Product Info */}
-                    <h3 className="mb-1 text-base font-medium text-gray-800">
+                    <h3 className="mb-1 text-sm font-medium text-gray-800 truncate sm:text-base">
                       {product.name}
                     </h3>
 
@@ -99,12 +104,12 @@ export default function CarouselComponent() {
                     </div>
 
                     <div className="mb-3 text-xs text-gray-600 line-clamp-2">
-                      {truncateText(product.description, 80)}
+                      {truncateText(product.description, 60)}
                     </div>
 
                     {/* Price Info */}
                     <div className="flex items-baseline mb-1">
-                      <span className="text-2xl font-bold text-primary">
+                      <span className="text-xl font-bold text-primary sm:text-2xl">
                         ${product.discount}
                       </span>
                       <span className="ml-1 text-xs text-gray-600">/pill</span>
@@ -119,7 +124,7 @@ export default function CarouselComponent() {
 
                     {/* View Details Button */}
                     <Link to={`/product/${product.uuid}`}>
-                      <button className="w-full py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-green-500 rounded-md hover:bg-green-600">
+                      <button className="w-full py-2 text-xs font-medium text-white transition duration-150 ease-in-out bg-green-500 rounded-md sm:text-sm hover:bg-green-600">
                         View Details
                       </button>
                     </Link>
